@@ -16,6 +16,7 @@
 - Comandos atuais: `index`, `backfill`, `analyze`, `latest`.
 - Comando `sync` adicionado para uso pelo iPhone.
 - Workflow `iphone-weekly.yml` adicionado para relatorio semanal via iPhone.
+- Workflow `deploy-iphone-app.yml` adicionado para publicar o launcher no GitHub Pages.
 
 ### Backfill
 
@@ -49,3 +50,4 @@
 - Esporte alvo: grappling.
 - Fluxo recomendado para iPhone: iOS Shortcuts dispara GitHub Actions, que roda `python -B main.py sync`.
 - Launcher HTML para iPhone adicionado em `iphone_app/index.html`.
+- Launcher HTML pode ser publicado em GitHub Pages para abrir no Safari e adicionar a Tela de Inicio.
