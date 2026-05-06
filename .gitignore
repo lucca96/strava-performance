@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+desktop.ini
+
+data/cache/
+data/api_usage_log.csv
+data/test_tmp/
