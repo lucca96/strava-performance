@@ -118,6 +118,8 @@ Pasta:
 
 - `iphone_app/index.html`
 - `iphone_app/icon.svg`
+- `iphone_app/icon-180.png`
+- `iphone_app/icon-512.png`
 - `.github/workflows/deploy-iphone-app.yml`
 
 Objetivo:
@@ -128,6 +130,7 @@ Objetivo:
 - ler os relatorios publicos do repo para mostrar um resumo da ultima semana.
 - copiar o Markdown AI-ready mais recente para o clipboard do iPhone.
 - expor a identidade visual do launcher com icone proprio.
+- usar `apple-touch-icon` em PNG para evitar fallback do Safari/iPhone.
 
 Atalhos esperados:
 
