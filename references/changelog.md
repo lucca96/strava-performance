@@ -15,6 +15,7 @@
 - Sem subcomando, imprime ajuda e faz zero chamadas.
 - Comandos atuais: `index`, `backfill`, `analyze`, `latest`.
 - Comando `sync` adicionado para uso pelo iPhone.
+- Workflow `iphone-weekly.yml` adicionado para relatorio semanal via iPhone.
 
 ### Backfill
 
@@ -47,3 +48,4 @@
 - Agregacao historica desejada: semanal.
 - Esporte alvo: grappling.
 - Fluxo recomendado para iPhone: iOS Shortcuts dispara GitHub Actions, que roda `python -B main.py sync`.
+- Launcher HTML para iPhone adicionado em `iphone_app/index.html`.

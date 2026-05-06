@@ -59,6 +59,17 @@ Arquivo:
 
 O workflow pode ser disparado manualmente pelo GitHub ou por iOS Shortcuts.
 
+## Workflow semanal
+
+Arquivo:
+
+- `.github/workflows/iphone-weekly.yml`
+
+Esse workflow roda:
+
+- `python -B main.py weekly`
+- `python -B main.py ai-ready`
+
 ## Atalho iOS
 
 Criar um atalho com uma chamada HTTP para a API do GitHub:
@@ -79,6 +90,17 @@ Criar um atalho com uma chamada HTTP para a API do GitHub:
 
 O token do GitHub deve ter permissao minima para disparar workflows no repo privado.
 
+Para o semanal, usar endpoint:
+
+- `https://api.github.com/repos/OWNER/REPO/actions/workflows/iphone-weekly.yml/dispatches`
+
+Atalho sugerido:
+
+- nome: `Weekly Strava`
+- mesmo formato do atalho `Sync Strava`
+- body JSON: `{ "ref": "main" }`
+- mesma estrategia de validacao local: se o retorno indicar `dispatches`, tratar como envio concluido
+
 ## Alternativa mais simples, mas menos autonoma
 
 Usar app GitHub no iPhone:
@@ -89,6 +111,34 @@ Usar app GitHub no iPhone:
 4. Tocar em `Run workflow`.
 
 Isso evita criar token para Shortcuts, mas exige mais cliques.
+
+## App HTML para iPhone
+
+Pasta:
+
+- `iphone_app/index.html`
+
+Objetivo:
+
+- funcionar como launcher visual para os Atalhos locais do iPhone;
+- nao embutir token do GitHub no HTML;
+- abrir `shortcuts://run-shortcut?...` para acionar os atalhos ja configurados.
+
+Atalhos esperados:
+
+- `Sync Strava`
+- `Weekly Strava`
+
+Instalacao sugerida:
+
+1. abrir o arquivo HTML no Safari;
+2. tocar em `Compartilhar`;
+3. usar `Adicionar a Tela de Inicio`.
+
+Motivo tecnico:
+
+- um HTML puro no iPhone nao deve carregar o token do GitHub no client;
+- usar o esquema `shortcuts://` mantem o segredo dentro do Atalho, nao da pagina.
 
 ## Alternativa local
 

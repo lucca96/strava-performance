@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Strava Control</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --surface: #fffaf0;
+      --ink: #14213d;
+      --muted: #5b6578;
+      --accent: #ff6b35;
+      --accent-2: #2a9d8f;
+      --line: #d9cfbf;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 107, 53, 0.18), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(42, 157, 143, 0.18), transparent 28%),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    .shell {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 18px 40px;
+    }
+
+    .hero {
+      padding: 24px 0 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2.4rem;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    .panel {
+      background: rgba(255, 250, 240, 0.86);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 14px 36px rgba(20, 33, 61, 0.08);
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .action {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      border-radius: 8px;
+      padding: 16px 14px;
+      border: 1px solid transparent;
+      color: #fff;
+    }
+
+    .action strong {
+      display: block;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    .action span {
+      display: block;
+      font-size: 0.95rem;
+      line-height: 1.35;
+      opacity: 0.92;
+    }
+
+    .sync { background: linear-gradient(135deg, #ff6b35, #d1495b); }
+    .weekly { background: linear-gradient(135deg, #2a9d8f, #264653); }
+    .github { background: linear-gradient(135deg, #1f2937, #334155); }
+
+    .note {
+      margin-top: 18px;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <h1>Strava Control</h1>
+      <p class="sub">Atalhos rapidos para disparar suas automacoes do pipeline direto do iPhone.</p>
+    </section>
+
+    <section class="panel">
+      <div class="stack">
+        <a class="action sync" href="shortcuts://run-shortcut?name=Sync%20Strava">
+          <strong>Sync Strava</strong>
+          <span>Atualiza a atividade mais recente, o historico, o report individual, o weekly e o AI-ready.</span>
+        </a>
+
+        <a class="action weekly" href="shortcuts://run-shortcut?name=Weekly%20Strava">
+          <strong>Weekly Strava</strong>
+          <span>Atualiza so os relatorios semanais e o AI-ready da semana mais recente.</span>
+        </a>
+
+        <a class="action github" href="https://github.com/lucca96/strava-performance/actions">
+          <strong>Ver Actions</strong>
+          <span>Abre o GitHub para conferir se a execucao terminou com sucesso.</span>
+        </a>
+      </div>
+
+      <div class="note">
+        Fluxo recomendado:
+        <ul>
+          <li>Depois do treino: registrar titulo e RPE no Strava.</li>
+          <li>Tocar em <code>Sync Strava</code>.</li>
+          <li>No fechamento da semana: tocar em <code>Weekly Strava</code>.</li>
+          <li>Abra este arquivo no Safari e use <code>Adicionar a Tela de Inicio</code> para usar como app.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
