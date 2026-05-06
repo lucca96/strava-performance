@@ -25,6 +25,7 @@ Motivos:
    - `data/performance_history.csv`;
    - `data/reports/{activity_id}.md`;
    - `data/weekly_reports/YYYY_semana_WW.md`.
+   - `data/ai_reports/YYYY_semana_WW_ai.md`.
 7. O workflow commita os arquivos gerados.
 8. O usuario abre o Markdown semanal ou manda para AI.
 
@@ -40,6 +41,7 @@ O comando `sync`:
 - reconstrui o indice local;
 - analisa a atividade com HR mais recente;
 - gera o relatorio semanal mais recente.
+- gera o relatorio AI-ready mais recente.
 
 ## Secrets necessarios no GitHub
 

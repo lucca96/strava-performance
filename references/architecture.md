@@ -13,6 +13,7 @@ Comandos:
 - `python -B main.py sync`
 - `python -B main.py weekly`
 - `python -B main.py weekly --all`
+- `python -B main.py ai-ready`
 
 Rodar `python -B main.py` sem subcomando so imprime ajuda e nao chama a API.
 
@@ -100,8 +101,20 @@ O comando `weekly` nao chama a API.
 4. Analisa a atividade.
 5. Atualiza o report individual.
 6. Gera o report semanal mais recente.
+7. Gera o report AI-ready mais recente.
 
 Esse e o comando recomendado para rodar pelo iPhone apos cadastrar uma atividade.
+
+## Fluxo do ai-ready
+
+1. Le `data/performance_history.csv`.
+2. Seleciona a semana mais recente, ou a semana informada por `--year` e `--week`.
+3. Renderiza contexto fixo do atleta.
+4. Inclui o relatorio semanal consolidado.
+5. Inclui dados estruturados das sessoes da semana.
+6. Escreve `data/ai_reports/YYYY_semana_WW_ai.md`.
+
+O comando `ai-ready` nao chama a API.
 
 ## Definicao de completa
 

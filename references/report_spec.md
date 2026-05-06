@@ -81,3 +81,19 @@ Usar:
 - nomes de campos estaveis;
 - unidades explicitas;
 - texto sem decoracao visual excessiva.
+
+## Relatorio AI-ready
+
+Pasta: `data/ai_reports/`
+
+Nome: `YYYY_semana_WW_ai.md`
+
+Secoes:
+
+- contexto fixo;
+- tarefa para AI;
+- relatorio semanal consolidado;
+- dados estruturados da semana;
+- observacoes de interpretacao.
+
+Este e o arquivo preferencial para colar em uma AI.

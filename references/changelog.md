@@ -30,6 +30,8 @@
 - Secao `Status` foi removida dos reports.
 - Reports semanais foram adicionados em `data/weekly_reports/`.
 - Padrao de nome semanal: `YYYY_semana_WW.md`, usando semana ISO-8601.
+- Reports AI-ready foram adicionados em `data/ai_reports/`.
+- Padrao de nome AI-ready: `YYYY_semana_WW_ai.md`.
 
 ### Classificacao
 
