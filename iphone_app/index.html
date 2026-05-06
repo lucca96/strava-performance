@@ -2,148 +2,512 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Strava Control</title>
+  <meta name="apple-mobile-web-app-title" content="Forca Lab">
+  <meta name="theme-color" content="#0f0f0f">
+  <title>Forca Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f4efe6;
-      --surface: #fffaf0;
-      --ink: #14213d;
-      --muted: #5b6578;
-      --accent: #ff6b35;
-      --accent-2: #2a9d8f;
-      --line: #d9cfbf;
+      --bg: #0c0c0c;
+      --surface: #161616;
+      --surface-2: #1e1e1e;
+      --surface-3: #242424;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.15);
+      --text: #f0ede8;
+      --text-muted: #8a847d;
+      --text-dim: #5a5753;
+      --orange: #e8622a;
+      --orange-dim: rgba(232, 98, 42, 0.14);
+      --orange-border: rgba(232, 98, 42, 0.32);
+      --green: #3dba78;
+      --green-dim: rgba(61, 186, 120, 0.12);
+      --green-border: rgba(61, 186, 120, 0.25);
+      --blue: #4b8bff;
+      --blue-dim: rgba(75, 139, 255, 0.12);
+      --blue-border: rgba(75, 139, 255, 0.24);
+      --radius: 12px;
+      --radius-lg: 18px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --font-display: "Syne", sans-serif;
+      --font-body: "DM Sans", sans-serif;
+      --font-mono: "DM Mono", monospace;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
-      margin: 0;
       min-height: 100vh;
-      font-family: Georgia, "Times New Roman", serif;
       background:
-        radial-gradient(circle at top left, rgba(255, 107, 53, 0.18), transparent 32%),
-        radial-gradient(circle at bottom right, rgba(42, 157, 143, 0.18), transparent 28%),
+        radial-gradient(circle at top left, rgba(232, 98, 42, 0.14), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(61, 186, 120, 0.10), transparent 24%),
         var(--bg);
-      color: var(--ink);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .shell {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 24px 18px 40px;
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-spacer {
+      height: calc(var(--safe-top) + 10px);
+      background: var(--bg);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px 16px;
+      background: rgba(12, 12, 12, 0.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .logo span {
+      color: var(--orange);
+    }
+
+    .header-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .header-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(61, 186, 120, 0.12);
+    }
+
+    main {
+      flex: 1;
+      padding: 22px 20px calc(96px + var(--safe-bottom));
     }
 
     .hero {
-      padding: 24px 0 18px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 10px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
     h1 {
-      margin: 0 0 8px;
-      font-size: 2.4rem;
+      font-family: var(--font-display);
+      font-size: 34px;
+      line-height: 0.95;
+      font-weight: 800;
+      letter-spacing: 0;
+      margin-bottom: 10px;
+    }
+
+    .hero-copy {
+      max-width: 32ch;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .section-title {
+      margin-bottom: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      position: relative;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 2px;
+    }
+
+    .stat-card.orange::before { background: var(--orange); }
+    .stat-card.green::before { background: var(--green); }
+    .stat-card.blue::before { background: var(--blue); }
+    .stat-card.dim::before { background: rgba(255, 255, 255, 0.12); }
+
+    .stat-label {
+      margin-bottom: 10px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .stat-note {
+      margin-top: 8px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .actions {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .action-card {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: inherit;
+      text-decoration: none;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .action-card:active {
+      transform: scale(0.985);
+    }
+
+    .action-card.sync {
+      border-color: var(--orange-border);
+      background: linear-gradient(180deg, rgba(232, 98, 42, 0.10), rgba(22, 22, 22, 1));
+    }
+
+    .action-card.weekly {
+      border-color: var(--green-border);
+      background: linear-gradient(180deg, rgba(61, 186, 120, 0.08), rgba(22, 22, 22, 1));
+    }
+
+    .action-card.github {
+      border-color: var(--blue-border);
+      background: linear-gradient(180deg, rgba(75, 139, 255, 0.08), rgba(22, 22, 22, 1));
+    }
+
+    .action-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-2);
+    }
+
+    .sync .action-icon {
+      color: var(--orange);
+      background: var(--orange-dim);
+      border-color: var(--orange-border);
+    }
+
+    .weekly .action-icon {
+      color: var(--green);
+      background: var(--green-dim);
+      border-color: var(--green-border);
+    }
+
+    .github .action-icon {
+      color: var(--blue);
+      background: var(--blue-dim);
+      border-color: var(--blue-border);
+    }
+
+    .action-copy strong {
+      display: block;
+      margin-bottom: 4px;
+      font-family: var(--font-display);
+      font-size: 18px;
       line-height: 1;
       font-weight: 700;
     }
 
-    .sub {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1rem;
+    .action-copy span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 13px;
       line-height: 1.45;
+    }
+
+    .action-arrow {
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 18px;
     }
 
     .panel {
-      background: rgba(255, 250, 240, 0.86);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 14px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 14px 36px rgba(20, 33, 61, 0.08);
+      margin-bottom: 18px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
     }
 
-    .stack {
+    .panel-title {
+      margin-bottom: 14px;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .list {
       display: grid;
-      gap: 12px;
-      margin-top: 18px;
+      gap: 10px;
     }
 
-    .action {
-      display: block;
-      width: 100%;
-      text-decoration: none;
-      border-radius: 8px;
-      padding: 16px 14px;
-      border: 1px solid transparent;
-      color: #fff;
+    .list-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
     }
 
-    .action strong {
-      display: block;
-      font-size: 1.1rem;
-      margin-bottom: 4px;
+    .list-row:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
     }
 
-    .action span {
-      display: block;
-      font-size: 0.95rem;
-      line-height: 1.35;
-      opacity: 0.92;
-    }
-
-    .sync { background: linear-gradient(135deg, #ff6b35, #d1495b); }
-    .weekly { background: linear-gradient(135deg, #2a9d8f, #264653); }
-    .github { background: linear-gradient(135deg, #1f2937, #334155); }
-
-    .note {
-      margin-top: 18px;
-      font-size: 0.95rem;
+    .list-row-label {
+      color: var(--text-muted);
+      font-size: 13px;
       line-height: 1.45;
-      color: var(--muted);
     }
 
-    ul {
-      margin: 10px 0 0;
-      padding-left: 18px;
+    .list-row-value {
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 10px 16px calc(10px + var(--safe-bottom));
+      border-top: 1px solid var(--border);
+      background: rgba(12, 12, 12, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 6px;
+      border-radius: 10px;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-link.active {
+      color: var(--orange);
+      background: var(--orange-dim);
+      border: 1px solid var(--orange-border);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
     }
   </style>
 </head>
 <body>
-  <main class="shell">
-    <section class="hero">
-      <h1>Strava Control</h1>
-      <p class="sub">Atalhos rapidos para disparar suas automacoes do pipeline direto do iPhone.</p>
-    </section>
+  <div id="app">
+    <div class="status-spacer"></div>
 
-    <section class="panel">
-      <div class="stack">
-        <a class="action sync" href="shortcuts://run-shortcut?name=Sync%20Strava">
-          <strong>Sync Strava</strong>
-          <span>Atualiza a atividade mais recente, o historico, o report individual, o weekly e o AI-ready.</span>
-        </a>
-
-        <a class="action weekly" href="shortcuts://run-shortcut?name=Weekly%20Strava">
-          <strong>Weekly Strava</strong>
-          <span>Atualiza so os relatorios semanais e o AI-ready da semana mais recente.</span>
-        </a>
-
-        <a class="action github" href="https://github.com/lucca96/strava-performance/actions">
-          <strong>Ver Actions</strong>
-          <span>Abre o GitHub para conferir se a execucao terminou com sucesso.</span>
-        </a>
+    <header>
+      <div class="logo">Forca<span>Lab</span></div>
+      <div class="header-pill">
+        <span class="header-dot"></span>
+        <span>iPhone launcher</span>
       </div>
+    </header>
 
-      <div class="note">
-        Fluxo recomendado:
-        <ul>
-          <li>Depois do treino: registrar titulo e RPE no Strava.</li>
-          <li>Tocar em <code>Sync Strava</code>.</li>
-          <li>No fechamento da semana: tocar em <code>Weekly Strava</code>.</li>
-          <li>Abra este arquivo no Safari e use <code>Adicionar a Tela de Inicio</code> para usar como app.</li>
-        </ul>
-      </div>
-    </section>
-  </main>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">Strava performance pipeline</div>
+        <h1>Controle rapido dos seus reports.</h1>
+        <p class="hero-copy">
+          Dispare o sync do treino, atualize o fechamento semanal e acompanhe a execucao no GitHub sem sair da home screen.
+        </p>
+      </section>
+
+      <section>
+        <div class="section-title">Resumo</div>
+        <div class="stats-grid">
+          <div class="stat-card orange">
+            <div class="stat-label">Fluxo diario</div>
+            <div class="stat-value">Sync</div>
+            <div class="stat-note">atividade + reports</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-label">Fechamento</div>
+            <div class="stat-value">Weekly</div>
+            <div class="stat-note">semana + AI-ready</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-label">Verificacao</div>
+            <div class="stat-value">Actions</div>
+            <div class="stat-note">status da execucao</div>
+          </div>
+          <div class="stat-card dim">
+            <div class="stat-label">Operacao</div>
+            <div class="stat-value">1 tap</div>
+            <div class="stat-note">atalhos locais</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title">Acoes</div>
+        <div class="actions">
+          <a class="action-card sync" href="shortcuts://run-shortcut?name=Sync%20Strava">
+            <div class="action-icon">↻</div>
+            <div class="action-copy">
+              <strong>Sync Strava</strong>
+              <span>Atualiza a atividade mais recente, o historico, o report individual, o semanal e o AI-ready.</span>
+            </div>
+            <div class="action-arrow">→</div>
+          </a>
+
+          <a class="action-card weekly" href="shortcuts://run-shortcut?name=Weekly%20Strava">
+            <div class="action-icon">≡</div>
+            <div class="action-copy">
+              <strong>Weekly Strava</strong>
+              <span>Regenera o report semanal e o AI-ready da semana mais recente sem rodar o fluxo completo.</span>
+            </div>
+            <div class="action-arrow">→</div>
+          </a>
+
+          <a class="action-card github" href="https://github.com/lucca96/strava-performance/actions">
+            <div class="action-icon">◎</div>
+            <div class="action-copy">
+              <strong>Ver Actions</strong>
+              <span>Abre o GitHub para conferir se o workflow entrou em fila, executou e terminou verde.</span>
+            </div>
+            <div class="action-arrow">→</div>
+          </a>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Rotina recomendada</div>
+        <div class="list">
+          <div class="list-row">
+            <div class="list-row-label">Depois do treino, ajustar titulo e RPE no Strava.</div>
+            <div class="list-row-value">pos-treino</div>
+          </div>
+          <div class="list-row">
+            <div class="list-row-label">Tocar em <strong>Sync Strava</strong> para atualizar a base e os reports.</div>
+            <div class="list-row-value">diario</div>
+          </div>
+          <div class="list-row">
+            <div class="list-row-label">No fechamento da semana, rodar <strong>Weekly Strava</strong>.</div>
+            <div class="list-row-value">semanal</div>
+          </div>
+          <div class="list-row">
+            <div class="list-row-label">Usar <strong>Ver Actions</strong> quando quiser validar o resultado.</div>
+            <div class="list-row-value">checagem</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav>
+      <a class="nav-link active" href="shortcuts://run-shortcut?name=Sync%20Strava">
+        <span class="nav-icon">↻</span>
+        <span>Sync</span>
+      </a>
+      <a class="nav-link" href="shortcuts://run-shortcut?name=Weekly%20Strava">
+        <span class="nav-icon">≡</span>
+        <span>Weekly</span>
+      </a>
+      <a class="nav-link" href="https://github.com/lucca96/strava-performance/actions">
+        <span class="nav-icon">◎</span>
+        <span>Actions</span>
+      </a>
+    </nav>
+  </div>
 </body>
 </html>
