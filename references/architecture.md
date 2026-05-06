@@ -116,6 +116,14 @@ Esse e o comando recomendado para rodar pelo iPhone apos cadastrar uma atividade
 
 O comando `ai-ready` nao chama a API.
 
+## Launcher iPhone
+
+Arquivo:
+
+- `iphone_app/index.html`
+
+Ele nao fala com a API do GitHub diretamente. Ele apenas abre atalhos locais via `shortcuts://`.
+
 ## Definicao de completa
 
 Uma atividade com HR e considerada completa quando:

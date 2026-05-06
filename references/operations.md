@@ -101,6 +101,8 @@ Uso pelo iPhone:
 - caminho recomendado: iOS Shortcuts disparando GitHub Actions;
 - comando executado pelo workflow: `python -B main.py sync`;
 - o sync tambem gera `data/ai_reports/YYYY_semana_WW_ai.md`;
+- existe workflow separado para `weekly` + `ai-ready`;
+- existe launcher HTML em `iphone_app/index.html` para abrir os atalhos locais;
 - detalhes em `references/iphone_flow.md`.
 
 ## Testes
