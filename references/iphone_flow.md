@@ -117,6 +117,7 @@ Isso evita criar token para Shortcuts, mas exige mais cliques.
 Pasta:
 
 - `iphone_app/index.html`
+- `iphone_app/icon.svg`
 - `.github/workflows/deploy-iphone-app.yml`
 
 Objetivo:
@@ -126,6 +127,7 @@ Objetivo:
 - abrir `shortcuts://run-shortcut?...` para acionar os atalhos ja configurados.
 - ler os relatorios publicos do repo para mostrar um resumo da ultima semana.
 - copiar o Markdown AI-ready mais recente para o clipboard do iPhone.
+- expor a identidade visual do launcher com icone proprio.
 
 Atalhos esperados:
 
