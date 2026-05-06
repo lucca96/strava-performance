@@ -8,6 +8,8 @@
   <meta name="apple-mobile-web-app-title" content="Forca Lab">
   <meta name="theme-color" content="#0f0f0f">
   <title>Forca Lab</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
@@ -85,13 +87,27 @@
     }
 
     .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .logo-word {
       font-family: var(--font-display);
       font-size: 18px;
       font-weight: 800;
       letter-spacing: 0;
     }
 
-    .logo span {
+    .logo-word span {
       color: var(--orange);
     }
 
@@ -415,7 +431,10 @@
     <div class="status-spacer"></div>
 
     <header>
-      <div class="logo">Forca<span>Lab</span></div>
+      <div class="logo">
+        <img class="logo-mark" src="icon.svg" alt="Forca Lab">
+        <div class="logo-word">Forca<span>Lab</span></div>
+      </div>
       <div class="header-pill">
         <span class="header-dot"></span>
         <span>weekly + AI-ready</span>
