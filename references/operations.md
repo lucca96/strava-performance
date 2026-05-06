@@ -56,6 +56,18 @@ Gerar todas as semanas do historico:
 python -B main.py weekly --all
 ```
 
+Gerar relatorio AI-ready da semana mais recente:
+
+```powershell
+python -B main.py ai-ready
+```
+
+Gerar AI-ready de uma semana especifica:
+
+```powershell
+python -B main.py ai-ready --year 2025 --week 2
+```
+
 ## Limite de API
 
 Padrao:
@@ -88,6 +100,7 @@ Uso pelo iPhone:
 
 - caminho recomendado: iOS Shortcuts disparando GitHub Actions;
 - comando executado pelo workflow: `python -B main.py sync`;
+- o sync tambem gera `data/ai_reports/YYYY_semana_WW_ai.md`;
 - detalhes em `references/iphone_flow.md`.
 
 ## Testes

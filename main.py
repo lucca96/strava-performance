@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 from src.analysis import build_activity_record, classify_activity, estimate_hr_max, render_report, upsert_history
+from src.ai_ready_report import write_ai_ready_report
 from src.client import ApiBudgetExceeded, StravaClient
 from src.weekly_report import write_all_weekly_reports, write_weekly_report
 
@@ -14,6 +15,7 @@ INDEX_PATH = DATA_DIR / "cache" / "activity_index.json"
 HISTORY_PATH = DATA_DIR / "performance_history.csv"
 REPORTS_DIR = DATA_DIR / "reports"
 WEEKLY_REPORTS_DIR = DATA_DIR / "weekly_reports"
+AI_REPORTS_DIR = DATA_DIR / "ai_reports"
 PER_PAGE = 30
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -296,9 +298,12 @@ def cmd_sync(client):
 
     record = analyze_activity(client, activity)
     weekly_path = write_weekly_report(HISTORY_PATH, WEEKLY_REPORTS_DIR)
+    ai_ready_path = write_ai_ready_report(HISTORY_PATH, AI_REPORTS_DIR)
     print_status(client, "sync", f"atividade {record['activity_id']} processada")
     if weekly_path:
         print(f"Relatorio semanal: {weekly_path}")
+    if ai_ready_path:
+        print(f"Relatorio AI-ready: {ai_ready_path}")
     return record
 
 
@@ -319,6 +324,20 @@ def cmd_weekly(args):
         return None
 
     print(f"Relatorio semanal gerado: {path}")
+    return path
+
+
+def cmd_ai_ready(args):
+    if (args.year is None) != (args.week is None):
+        print("Use --year e --week juntos, ou omita ambos para gerar a semana mais recente.")
+        return None
+
+    path = write_ai_ready_report(HISTORY_PATH, AI_REPORTS_DIR, iso_year=args.year, iso_week=args.week)
+    if path is None:
+        print("Nenhum relatorio AI-ready gerado. Verifique se o CSV historico existe e tem datas validas.")
+        return None
+
+    print(f"Relatorio AI-ready gerado: {path}")
     return path
 
 
@@ -347,6 +366,10 @@ def build_parser():
     weekly_parser.add_argument("--year", type=int, help="Ano ISO-8601")
     weekly_parser.add_argument("--week", type=int, help="Semana ISO-8601")
 
+    ai_parser = subparsers.add_parser("ai-ready", help="Gera Markdown unico pronto para enviar a AI")
+    ai_parser.add_argument("--year", type=int, help="Ano ISO-8601")
+    ai_parser.add_argument("--week", type=int, help="Semana ISO-8601")
+
     return parser
 
 
@@ -373,6 +396,8 @@ def main(argv=None):
             cmd_sync(client)
         elif args.command == "weekly":
             cmd_weekly(args)
+        elif args.command == "ai-ready":
+            cmd_ai_ready(args)
     except ApiBudgetExceeded as exc:
         print(f"Orcamento de API atingido: {exc}")
         print(f"Chamadas API usadas: {client.calls_made}/{client.max_calls}")

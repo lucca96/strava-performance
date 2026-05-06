@@ -22,9 +22,11 @@ Projeto pessoal para transformar dados do Strava em relatorios Markdown e CSV hi
 - Backfill processa atividades com HR pendentes, respeitando limite de chamadas.
 - Reports por atividade ficam em `data/reports/{activity_id}.md`.
 - Reports semanais ficam em `data/weekly_reports/YYYY_semana_WW.md`.
+- Reports AI-ready ficam em `data/ai_reports/YYYY_semana_WW_ai.md`.
 - Historico tabular fica em `data/performance_history.csv`.
 - Uso de API fica em `data/api_usage_log.csv`.
 - Comando recomendado para iPhone: `python -B main.py sync`.
+- Comando manual para gerar AI-ready: `python -B main.py ai-ready`.
 
 ## Current classification rules
 

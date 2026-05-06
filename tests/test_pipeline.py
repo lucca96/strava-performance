@@ -7,6 +7,7 @@ import pandas as pd
 
 import main
 from src.analysis import classify_activity, render_report, upsert_history
+from src.ai_ready_report import ai_ready_filename, write_ai_ready_report
 from src.client import ApiBudgetExceeded, StravaClient
 from src.weekly_report import weekly_filename, write_all_weekly_reports, write_weekly_report
 
@@ -49,6 +50,7 @@ class PipelineTests(unittest.TestCase):
         main.HISTORY_PATH = self.data_dir / "performance_history.csv"
         main.REPORTS_DIR = self.data_dir / "reports"
         main.WEEKLY_REPORTS_DIR = self.data_dir / "weekly_reports"
+        main.AI_REPORTS_DIR = self.data_dir / "ai_reports"
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -183,6 +185,9 @@ class PipelineTests(unittest.TestCase):
     def test_weekly_report_uses_iso_week_filename(self):
         self.assertEqual(weekly_filename(2025, 2), "2025_semana_02.md")
 
+    def test_ai_ready_report_uses_iso_week_filename(self):
+        self.assertEqual(ai_ready_filename(2025, 2), "2025_semana_02_ai.md")
+
     def test_weekly_report_generation(self):
         rows = [
             {
@@ -232,6 +237,30 @@ class PipelineTests(unittest.TestCase):
         self.assertIn("- Sessoes: 2", report)
         self.assertIn("- grappling: 1 sessoes", report)
         self.assertIn("## Prompt para AI", report)
+
+    def test_ai_ready_report_generation(self):
+        rows = [
+            {
+                "activity_id": 1,
+                "name": "NoGi",
+                "type": "Workout",
+                "activity_category": "grappling",
+                "start_date_local": "2025-01-06T20:00:00Z",
+                "moving_time_min": 60,
+                "perceived_exertion": 8,
+                "session_rpe_load": 480,
+            }
+        ]
+        pd.DataFrame(rows).to_csv(main.HISTORY_PATH, index=False)
+
+        path = write_ai_ready_report(main.HISTORY_PATH, main.AI_REPORTS_DIR, 2025, 2)
+        report = path.read_text(encoding="utf-8")
+
+        self.assertEqual(path.name, "2025_semana_02_ai.md")
+        self.assertIn("## Contexto fixo", report)
+        self.assertIn("## Tarefa para AI", report)
+        self.assertIn("## Dados estruturados da semana", report)
+        self.assertIn("Analise os dados abaixo", report)
 
     def test_write_all_weekly_reports(self):
         rows = [

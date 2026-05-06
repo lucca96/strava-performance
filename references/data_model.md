@@ -20,6 +20,20 @@ Exemplo:
 
 O ano e a semana seguem ISO-8601.
 
+## Reports AI-ready
+
+Pasta: `data/ai_reports/`
+
+Padrao de nome:
+
+- `YYYY_semana_WW_ai.md`
+
+Exemplo:
+
+- `2025_semana_02_ai.md`
+
+Esses arquivos combinam contexto fixo do atleta, tarefa para AI, relatorio semanal consolidado e dados estruturados da semana.
+
 ## Campos principais
 
 Identificacao:
