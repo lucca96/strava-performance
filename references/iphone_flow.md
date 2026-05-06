@@ -117,6 +117,7 @@ Isso evita criar token para Shortcuts, mas exige mais cliques.
 Pasta:
 
 - `iphone_app/index.html`
+- `iphone_app/icon-app.png`
 - `iphone_app/icon.svg`
 - `iphone_app/icon-180.png`
 - `iphone_app/icon-512.png`
@@ -131,6 +132,7 @@ Objetivo:
 - copiar o Markdown AI-ready mais recente para o clipboard do iPhone.
 - expor a identidade visual do launcher com icone proprio.
 - usar `apple-touch-icon` em PNG para evitar fallback do Safari/iPhone.
+- o launcher atualmente usa `icon-app.png` como favicon, logo do header e apple-touch-icon.
 
 Atalhos esperados:
 
