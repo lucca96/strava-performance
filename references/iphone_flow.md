@@ -117,6 +117,7 @@ Isso evita criar token para Shortcuts, mas exige mais cliques.
 Pasta:
 
 - `iphone_app/index.html`
+- `.github/workflows/deploy-iphone-app.yml`
 
 Objetivo:
 
@@ -131,14 +132,32 @@ Atalhos esperados:
 
 Instalacao sugerida:
 
-1. abrir o arquivo HTML no Safari;
-2. tocar em `Compartilhar`;
-3. usar `Adicionar a Tela de Inicio`.
+1. publicar o launcher no GitHub Pages;
+2. abrir a URL no Safari;
+3. tocar em `Compartilhar`;
+4. usar `Adicionar a Tela de Inicio`.
+
+URL esperada para este repo:
+
+- `https://lucca96.github.io/strava-performance/`
+
+Passos no GitHub:
+
+1. abrir o repo;
+2. ir em `Settings > Pages`;
+3. em `Source`, escolher `GitHub Actions`;
+4. rodar o workflow `Deploy iPhone app` uma vez, se necessario.
 
 Motivo tecnico:
 
 - um HTML puro no iPhone nao deve carregar o token do GitHub no client;
 - usar o esquema `shortcuts://` mantem o segredo dentro do Atalho, nao da pagina.
+- o GitHub Pages publica site estatico publico; nao colocar segredos nele.
+
+Restricao importante:
+
+- pela documentacao do GitHub, sites do Pages sao publicos;
+- se a conta estiver em plano Free, repositorio privado nao publica Pages.
 
 ## Alternativa local
 

@@ -121,8 +121,10 @@ O comando `ai-ready` nao chama a API.
 Arquivo:
 
 - `iphone_app/index.html`
+- `.github/workflows/deploy-iphone-app.yml`
 
 Ele nao fala com a API do GitHub diretamente. Ele apenas abre atalhos locais via `shortcuts://`.
+O deploy do launcher e feito via GitHub Pages a partir de `iphone_app/`.
 
 ## Definicao de completa
 
