@@ -124,6 +124,8 @@ Objetivo:
 - funcionar como launcher visual para os Atalhos locais do iPhone;
 - nao embutir token do GitHub no HTML;
 - abrir `shortcuts://run-shortcut?...` para acionar os atalhos ja configurados.
+- ler os relatorios publicos do repo para mostrar um resumo da ultima semana.
+- copiar o Markdown AI-ready mais recente para o clipboard do iPhone.
 
 Atalhos esperados:
 
@@ -152,6 +154,7 @@ Motivo tecnico:
 
 - um HTML puro no iPhone nao deve carregar o token do GitHub no client;
 - usar o esquema `shortcuts://` mantem o segredo dentro do Atalho, nao da pagina.
+- como o repo esta publico, o launcher pode ler `data/weekly_reports/` e `data/ai_reports/` pela API publica do GitHub.
 - o GitHub Pages publica site estatico publico; nao colocar segredos nele.
 
 Restricao importante:
