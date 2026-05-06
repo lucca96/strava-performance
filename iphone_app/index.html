@@ -16,7 +16,6 @@
       --bg: #0c0c0c;
       --surface: #161616;
       --surface-2: #1e1e1e;
-      --surface-3: #242424;
       --border: rgba(255, 255, 255, 0.08);
       --border-strong: rgba(255, 255, 255, 0.15);
       --text: #f0ede8;
@@ -119,7 +118,7 @@
 
     main {
       flex: 1;
-      padding: 22px 20px calc(96px + var(--safe-bottom));
+      padding: 22px 20px calc(32px + var(--safe-bottom));
     }
 
     .hero {
@@ -160,17 +159,76 @@
       letter-spacing: 0.08em;
     }
 
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .metric-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+
+    .metric-card.orange::before { background: var(--orange); }
+    .metric-card.green::before { background: var(--green); }
+    .metric-card.blue::before { background: var(--blue); }
+    .metric-card.dim::before { background: rgba(255, 255, 255, 0.12); }
+
+    .metric-label {
+      margin-bottom: 8px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .metric-note {
+      margin-top: 8px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
     .actions {
       display: grid;
       gap: 12px;
       margin-bottom: 24px;
     }
 
-    .action-card {
+    .action-card,
+    .action-button {
       display: grid;
       grid-template-columns: 52px 1fr auto;
       align-items: center;
       gap: 14px;
+      width: 100%;
       padding: 16px;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
@@ -180,7 +238,14 @@
       transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
     }
 
-    .action-card:active {
+    .action-button {
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+    }
+
+    .action-card:active,
+    .action-button:active {
       transform: scale(0.985);
     }
 
@@ -189,7 +254,8 @@
       background: linear-gradient(180deg, rgba(232, 98, 42, 0.10), rgba(22, 22, 22, 1));
     }
 
-    .action-card.weekly {
+    .action-card.weekly,
+    .action-button.weekly {
       border-color: var(--green-border);
       background: linear-gradient(180deg, rgba(61, 186, 120, 0.08), rgba(22, 22, 22, 1));
     }
@@ -209,6 +275,7 @@
       font-size: 22px;
       border: 1px solid var(--border-strong);
       background: var(--surface-2);
+      font-family: var(--font-mono);
     }
 
     .sync .action-icon {
@@ -299,44 +366,47 @@
       white-space: nowrap;
     }
 
-    nav {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      padding: 10px 16px calc(10px + var(--safe-bottom));
-      border-top: 1px solid var(--border);
-      background: rgba(12, 12, 12, 0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-
-    .nav-link {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 8px 6px;
-      border-radius: 10px;
+    .subnote {
+      margin-top: 12px;
       color: var(--text-dim);
-      text-decoration: none;
       font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.05em;
+      font-size: 11px;
+      line-height: 1.45;
     }
 
-    .nav-link.active {
-      color: var(--orange);
-      background: var(--orange-dim);
-      border: 1px solid var(--orange-border);
+    .status {
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.45;
     }
 
-    .nav-icon {
-      font-size: 18px;
-      line-height: 1;
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(18px + var(--safe-bottom));
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      z-index: 30;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-2);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
   </style>
 </head>
@@ -348,7 +418,7 @@
       <div class="logo">Forca<span>Lab</span></div>
       <div class="header-pill">
         <span class="header-dot"></span>
-        <span>iPhone launcher</span>
+        <span>weekly + AI-ready</span>
       </div>
     </header>
 
@@ -357,38 +427,75 @@
         <div class="eyebrow">Strava performance pipeline</div>
         <h1>Controle rapido dos seus reports.</h1>
         <p class="hero-copy">
-          Dispare o sync do treino, atualize o fechamento semanal e acompanhe a execucao no GitHub sem sair da home screen.
+          Rode o sync do treino, gere o fechamento semanal e copie o Markdown AI-ready mais recente para colar no chat com a IA.
         </p>
+      </section>
+
+      <div id="status" class="status">Carregando resumo da semana mais recente...</div>
+
+      <section>
+        <div class="section-title">Resumo da ultima semana</div>
+        <div class="cards">
+          <div class="card metric-card orange">
+            <div class="metric-label">Semana ISO</div>
+            <div id="metric-week" class="metric-value">--</div>
+            <div id="metric-week-note" class="metric-note">sem dados</div>
+          </div>
+          <div class="card metric-card green">
+            <div class="metric-label">Sessoes</div>
+            <div id="metric-sessions" class="metric-value">--</div>
+            <div class="metric-note">atividades na semana</div>
+          </div>
+          <div class="card metric-card blue">
+            <div class="metric-label">Tempo total</div>
+            <div id="metric-time" class="metric-value">--</div>
+            <div class="metric-note">volume em minutos</div>
+          </div>
+          <div class="card metric-card dim">
+            <div class="metric-label">Carga sRPE</div>
+            <div id="metric-load" class="metric-value">--</div>
+            <div class="metric-note">carga consolidada</div>
+          </div>
+        </div>
       </section>
 
       <section>
         <div class="section-title">Acoes</div>
         <div class="actions">
           <a class="action-card sync" href="shortcuts://run-shortcut?name=Sync%20Strava">
-            <div class="action-icon">↻</div>
+            <div class="action-icon">S</div>
             <div class="action-copy">
               <strong>Sync Strava</strong>
               <span>Atualiza a atividade mais recente, o historico, o report individual, o semanal e o AI-ready.</span>
             </div>
-            <div class="action-arrow">→</div>
+            <div class="action-arrow">></div>
           </a>
 
           <a class="action-card weekly" href="shortcuts://run-shortcut?name=Weekly%20Strava">
-            <div class="action-icon">≡</div>
+            <div class="action-icon">W</div>
             <div class="action-copy">
               <strong>Weekly Strava</strong>
               <span>Regenera o report semanal e o AI-ready da semana mais recente sem rodar o fluxo completo.</span>
             </div>
-            <div class="action-arrow">→</div>
+            <div class="action-arrow">></div>
           </a>
 
+          <button id="copy-ai-report" class="action-button weekly" type="button">
+            <div class="action-icon">M</div>
+            <div class="action-copy">
+              <strong>Copiar AI-ready</strong>
+              <span>Copia o Markdown AI-ready mais recente para colar direto no chat com a IA.</span>
+            </div>
+            <div class="action-arrow">></div>
+          </button>
+
           <a class="action-card github" href="https://github.com/lucca96/strava-performance/actions">
-            <div class="action-icon">◎</div>
+            <div class="action-icon">G</div>
             <div class="action-copy">
               <strong>Ver Actions</strong>
               <span>Abre o GitHub para conferir se o workflow entrou em fila, executou e terminou verde.</span>
             </div>
-            <div class="action-arrow">→</div>
+            <div class="action-arrow">></div>
           </a>
         </div>
       </section>
@@ -405,7 +512,7 @@
             <div class="list-row-value">diario</div>
           </div>
           <div class="list-row">
-            <div class="list-row-label">No fechamento da semana, rodar <strong>Weekly Strava</strong>.</div>
+            <div class="list-row-label">No fechamento da semana, rodar <strong>Weekly Strava</strong> e depois <strong>Copiar AI-ready</strong>.</div>
             <div class="list-row-value">semanal</div>
           </div>
           <div class="list-row">
@@ -413,23 +520,131 @@
             <div class="list-row-value">checagem</div>
           </div>
         </div>
+        <div class="subnote">
+          O botao de copia le o arquivo mais recente em <code>data/ai_reports/</code> no repo publico e usa o clipboard do iPhone.
+        </div>
       </section>
     </main>
-
-    <nav>
-      <a class="nav-link active" href="shortcuts://run-shortcut?name=Sync%20Strava">
-        <span class="nav-icon">↻</span>
-        <span>Sync</span>
-      </a>
-      <a class="nav-link" href="shortcuts://run-shortcut?name=Weekly%20Strava">
-        <span class="nav-icon">≡</span>
-        <span>Weekly</span>
-      </a>
-      <a class="nav-link" href="https://github.com/lucca96/strava-performance/actions">
-        <span class="nav-icon">◎</span>
-        <span>Actions</span>
-      </a>
-    </nav>
   </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const REPO_OWNER = "lucca96";
+    const REPO_NAME = "strava-performance";
+    const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+    let latestAiMarkdown = "";
+
+    async function fetchJson(url) {
+      const response = await fetch(url, { headers: { "Accept": "application/vnd.github+json" } });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      return response.json();
+    }
+
+    async function fetchText(url) {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      return response.text();
+    }
+
+    function latestFileByName(files, suffix) {
+      return files
+        .filter((file) => file.type === "file" && file.name.endsWith(suffix))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .at(-1);
+    }
+
+    function updateStatus(message) {
+      document.getElementById("status").textContent = message;
+    }
+
+    function setMetric(id, value) {
+      document.getElementById(id).textContent = value || "--";
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+
+    function extractMetric(report, label) {
+      const pattern = new RegExp(`- ${label}: (.+)`, "i");
+      const match = report.match(pattern);
+      return match ? match[1].trim() : "";
+    }
+
+    function extractPeriod(report) {
+      const match = report.match(/- Periodo observado: (.+)/i);
+      return match ? match[1].trim() : "sem dados";
+    }
+
+    function extractWeekLabel(filename) {
+      const match = filename.match(/(\d{4})_semana_(\d{2})/);
+      if (!match) {
+        return "--";
+      }
+      return `${match[1]}-W${match[2]}`;
+    }
+
+    async function loadLatestReports() {
+      try {
+        updateStatus("Buscando relatorios publicos no GitHub...");
+
+        const [weeklyFiles, aiFiles] = await Promise.all([
+          fetchJson(`${API_BASE}/data/weekly_reports`),
+          fetchJson(`${API_BASE}/data/ai_reports`)
+        ]);
+
+        const latestWeekly = latestFileByName(weeklyFiles, ".md");
+        const latestAi = latestFileByName(aiFiles, "_ai.md");
+
+        if (!latestWeekly || !latestAi) {
+          updateStatus("Ainda nao existem relatorios suficientes para montar o resumo.");
+          return;
+        }
+
+        const [weeklyReport, aiReport] = await Promise.all([
+          fetchText(latestWeekly.download_url),
+          fetchText(latestAi.download_url)
+        ]);
+
+        latestAiMarkdown = aiReport;
+
+        setMetric("metric-week", extractWeekLabel(latestWeekly.name));
+        setMetric("metric-week-note", extractPeriod(weeklyReport));
+        setMetric("metric-sessions", extractMetric(weeklyReport, "Sessoes"));
+        setMetric("metric-time", extractMetric(weeklyReport, "Tempo total"));
+        setMetric("metric-load", extractMetric(weeklyReport, "Carga sRPE total"));
+
+        updateStatus("Resumo carregado a partir do report semanal mais recente.");
+      } catch (error) {
+        updateStatus("Nao consegui carregar os relatorios publicos do GitHub.");
+      }
+    }
+
+    async function copyLatestAiReport() {
+      if (!latestAiMarkdown) {
+        showToast("AI-ready ainda nao carregado");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(latestAiMarkdown);
+        showToast("Markdown AI-ready copiado");
+      } catch (error) {
+        showToast("Falha ao copiar Markdown");
+      }
+    }
+
+    document.getElementById("copy-ai-report").addEventListener("click", copyLatestAiReport);
+    loadLatestReports();
+  </script>
 </body>
 </html>
