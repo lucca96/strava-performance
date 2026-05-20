@@ -238,6 +238,48 @@
       margin-bottom: 24px;
     }
 
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--orange-border);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
     .action-card,
     .action-button {
       display: grid;
@@ -437,7 +479,7 @@
       </div>
       <div class="header-pill">
         <span class="header-dot"></span>
-        <span>weekly + AI-ready</span>
+        <span>ultimo treino</span>
       </div>
     </header>
 
@@ -446,35 +488,88 @@
         <div class="eyebrow">Strava performance pipeline</div>
         <h1>Controle rapido dos seus reports.</h1>
         <p class="hero-copy">
-          Rode o sync do treino, gere o fechamento semanal e copie o Markdown AI-ready mais recente para colar no chat com a IA.
+          Rode o sync do treino, confira os indicadores do ultimo registro e copie um resumo pronto para colar no chat com a IA.
         </p>
       </section>
 
-      <div id="status" class="status">Carregando resumo da semana mais recente...</div>
+      <div id="status" class="status">Carregando treino mais recente...</div>
 
       <section>
-        <div class="section-title">Resumo da ultima semana</div>
+        <div class="section-title">Ultimo treino sincronizado</div>
         <div class="cards">
           <div class="card metric-card orange">
-            <div class="metric-label">Semana ISO</div>
-            <div id="metric-week" class="metric-value">--</div>
-            <div id="metric-week-note" class="metric-note">sem dados</div>
+            <div class="metric-label">FC inicial</div>
+            <div id="metric-hr-initial" class="metric-value">--</div>
+            <div class="metric-note">media dos 5 primeiros min</div>
           </div>
           <div class="card metric-card green">
-            <div class="metric-label">Sessoes</div>
-            <div id="metric-sessions" class="metric-value">--</div>
-            <div class="metric-note">atividades na semana</div>
+            <div class="metric-label">FC maxima</div>
+            <div id="metric-hr-max" class="metric-value">--</div>
+            <div class="metric-note">pico do treino</div>
           </div>
           <div class="card metric-card blue">
-            <div class="metric-label">Tempo total</div>
-            <div id="metric-time" class="metric-value">--</div>
-            <div class="metric-note">volume em minutos</div>
+            <div class="metric-label">FC final</div>
+            <div id="metric-hr-final" class="metric-value">--</div>
+            <div class="metric-note">media dos 5 ultimos min</div>
           </div>
           <div class="card metric-card dim">
-            <div class="metric-label">Carga sRPE</div>
-            <div id="metric-load" class="metric-value">--</div>
-            <div class="metric-note">carga consolidada</div>
+            <div class="metric-label">Tempo</div>
+            <div id="metric-time" class="metric-value">--</div>
+            <div class="metric-note">duracao do treino</div>
           </div>
+          <div class="card metric-card orange">
+            <div class="metric-label">RPE</div>
+            <div id="metric-rpe" class="metric-value">--</div>
+            <div class="metric-note">percepcao relativa</div>
+          </div>
+          <div class="card metric-card green">
+            <div class="metric-label">Data</div>
+            <div id="metric-date" class="metric-value">--</div>
+            <div id="metric-name" class="metric-note">sem dados</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Contexto do treino</div>
+        <div class="form-grid">
+          <div class="field-row">
+            <div class="field">
+              <label for="sleep-hours">Horas de sono</label>
+              <input id="sleep-hours" type="number" min="0" max="16" step="0.25" inputmode="decimal" placeholder="ex. 7.5">
+            </div>
+            <div class="field">
+              <label for="sleep-quality">Qualidade do sono</label>
+              <select id="sleep-quality">
+                <option value="">Selecionar</option>
+                <option>bom</option>
+                <option>normal</option>
+                <option>ruim</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="recovery">Recuperacao</label>
+            <select id="recovery">
+              <option value="">Selecionar</option>
+              <option>bom</option>
+              <option>normal</option>
+              <option>ruim</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="weight-start">Peso inicio</label>
+              <input id="weight-start" type="number" min="0" step="0.1" inputmode="decimal" placeholder="kg">
+            </div>
+            <div class="field">
+              <label for="weight-end">Peso final</label>
+              <input id="weight-end" type="number" min="0" step="0.1" inputmode="decimal" placeholder="kg">
+            </div>
+          </div>
+        </div>
+        <div id="context-note" class="subnote">
+          Estes dados ficam salvos neste iPhone e entram no resumo copiado do ultimo treino.
         </div>
       </section>
 
@@ -508,6 +603,15 @@
             <div class="action-arrow">></div>
           </button>
 
+          <button id="copy-workout-report" class="action-button weekly" type="button">
+            <div class="action-icon">T</div>
+            <div class="action-copy">
+              <strong>Copiar ultimo treino</strong>
+              <span>Copia o resumo do treino mais recente com FC inicial, maxima, final, RPE, tempo e contexto.</span>
+            </div>
+            <div class="action-arrow">></div>
+          </button>
+
           <a class="action-card github" href="https://github.com/lucca96/strava-performance/actions">
             <div class="action-icon">G</div>
             <div class="action-copy">
@@ -531,8 +635,8 @@
             <div class="list-row-value">diario</div>
           </div>
           <div class="list-row">
-            <div class="list-row-label">No fechamento da semana, rodar <strong>Weekly Strava</strong> e depois <strong>Copiar AI-ready</strong>.</div>
-            <div class="list-row-value">semanal</div>
+            <div class="list-row-label">Preencher o contexto no app e tocar em <strong>Copiar ultimo treino</strong>.</div>
+            <div class="list-row-value">pos-sync</div>
           </div>
           <div class="list-row">
             <div class="list-row-label">Usar <strong>Ver Actions</strong> quando quiser validar o resultado.</div>
@@ -540,7 +644,7 @@
           </div>
         </div>
         <div class="subnote">
-          O botao de copia le o arquivo mais recente em <code>data/ai_reports/</code> no repo publico e usa o clipboard do iPhone.
+          O resumo do ultimo treino le <code>data/performance_history.csv</code> e <code>data/reports/</code> no repo publico.
         </div>
       </section>
     </main>
@@ -553,6 +657,8 @@
     const REPO_NAME = "strava-performance";
     const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents`;
     let latestAiMarkdown = "";
+    let latestWorkoutMarkdown = "";
+    let latestWorkout = null;
 
     async function fetchJson(url) {
       const response = await fetch(url, { headers: { "Accept": "application/vnd.github+json" } });
@@ -577,12 +683,114 @@
         .at(-1);
     }
 
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let value = "";
+      let quoted = false;
+
+      for (let i = 0; i < text.length; i += 1) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"' && quoted && next === '"') {
+          value += '"';
+          i += 1;
+        } else if (char === '"') {
+          quoted = !quoted;
+        } else if (char === "," && !quoted) {
+          row.push(value);
+          value = "";
+        } else if ((char === "\n" || char === "\r") && !quoted) {
+          if (char === "\r" && next === "\n") {
+            i += 1;
+          }
+          row.push(value);
+          if (row.some((cell) => cell !== "")) {
+            rows.push(row);
+          }
+          row = [];
+          value = "";
+        } else {
+          value += char;
+        }
+      }
+
+      if (value || row.length) {
+        row.push(value);
+        rows.push(row);
+      }
+
+      const headers = rows.shift() || [];
+      return rows.map((cells) => Object.fromEntries(headers.map((header, index) => [header.replace(/^\uFEFF/, ""), cells[index] || ""])));
+    }
+
     function updateStatus(message) {
       document.getElementById("status").textContent = message;
     }
 
     function setMetric(id, value) {
       document.getElementById(id).textContent = value || "--";
+    }
+
+    function formatNumber(value, digits = 1, suffix = "") {
+      const number = Number(value);
+      if (!Number.isFinite(number)) {
+        return "";
+      }
+      return `${number.toFixed(digits)}${suffix}`;
+    }
+
+    function formatDate(value) {
+      if (!value) {
+        return "";
+      }
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) {
+        return value.slice(0, 10);
+      }
+      return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" });
+    }
+
+    function workoutContextKey() {
+      return latestWorkout ? `workout-context:${latestWorkout.activity_id}` : "workout-context:pending";
+    }
+
+    function readContext() {
+      return {
+        sleepHours: document.getElementById("sleep-hours").value.trim(),
+        sleepQuality: document.getElementById("sleep-quality").value,
+        recovery: document.getElementById("recovery").value,
+        weightStart: document.getElementById("weight-start").value.trim(),
+        weightEnd: document.getElementById("weight-end").value.trim()
+      };
+    }
+
+    function writeContext(context) {
+      document.getElementById("sleep-hours").value = context.sleepHours || "";
+      document.getElementById("sleep-quality").value = context.sleepQuality || "";
+      document.getElementById("recovery").value = context.recovery || "";
+      document.getElementById("weight-start").value = context.weightStart || "";
+      document.getElementById("weight-end").value = context.weightEnd || "";
+    }
+
+    function saveContext() {
+      localStorage.setItem(workoutContextKey(), JSON.stringify(readContext()));
+      if (latestWorkout) {
+        localStorage.removeItem("workout-context:pending");
+      }
+    }
+
+    function loadContext() {
+      const saved = localStorage.getItem(workoutContextKey()) || localStorage.getItem("workout-context:pending");
+      if (!saved) {
+        return;
+      }
+      try {
+        writeContext(JSON.parse(saved));
+      } catch (error) {
+        writeContext({});
+      }
     }
 
     function showToast(message) {
@@ -612,39 +820,95 @@
       return `${match[1]}-W${match[2]}`;
     }
 
+    function buildWorkoutSummary() {
+      if (!latestWorkout) {
+        return "";
+      }
+
+      const context = readContext();
+      const lines = [
+        `# Resumo do ultimo treino - ${latestWorkout.name || "sem titulo"}`,
+        "",
+        "## Indicadores",
+        "",
+        `- Activity ID: ${latestWorkout.activity_id || ""}`,
+        `- Data: ${latestWorkout.start_date_local || ""}`,
+        `- Tipo: ${latestWorkout.type || ""}`,
+        `- Categoria: ${latestWorkout.activity_category || ""}`,
+        `- Tempo de treino: ${formatNumber(latestWorkout.moving_time_min, 1, " min") || "sem dados"}`,
+        `- Frequencia inicial 5 min: ${formatNumber(latestWorkout.hr_initial_5min, 1) || "sem dados"}`,
+        `- Frequencia maxima: ${formatNumber(latestWorkout.max_heartrate, 1) || "sem dados"}`,
+        `- Frequencia final 5 min: ${formatNumber(latestWorkout.hr_final_5min, 1) || "sem dados"}`,
+        `- Percepcao relativa do esforco: ${formatNumber(latestWorkout.perceived_exertion, 1) || "sem dados"}`,
+        `- Carga sRPE: ${formatNumber(latestWorkout.session_rpe_load, 1) || "sem dados"}`,
+        "",
+        "## Contexto informado no app",
+        "",
+        `- Horas de sono: ${context.sleepHours || "sem dados"}`,
+        `- Qualidade do sono: ${context.sleepQuality || "sem dados"}`,
+        `- Recuperacao: ${context.recovery || "sem dados"}`,
+        `- Peso inicio do treino: ${context.weightStart ? `${context.weightStart} kg` : "sem dados"}`,
+        `- Peso final do treino: ${context.weightEnd ? `${context.weightEnd} kg` : "sem dados"}`,
+      ];
+
+      if (latestWorkoutMarkdown) {
+        lines.push("", "## Report individual gerado", "", latestWorkoutMarkdown.trim());
+      }
+
+      return `${lines.join("\n")}\n`;
+    }
+
+    function updateWorkoutMetrics() {
+      if (!latestWorkout) {
+        return;
+      }
+
+      setMetric("metric-hr-initial", formatNumber(latestWorkout.hr_initial_5min, 0));
+      setMetric("metric-hr-max", formatNumber(latestWorkout.max_heartrate, 0));
+      setMetric("metric-hr-final", formatNumber(latestWorkout.hr_final_5min, 0));
+      setMetric("metric-time", formatNumber(latestWorkout.moving_time_min, 1, "m"));
+      setMetric("metric-rpe", formatNumber(latestWorkout.perceived_exertion, 1));
+      setMetric("metric-date", formatDate(latestWorkout.start_date_local));
+      setMetric("metric-name", latestWorkout.name || "sem titulo");
+      document.getElementById("context-note").textContent = `Contexto salvo para activity_id ${latestWorkout.activity_id}.`;
+    }
+
     async function loadLatestReports() {
       try {
-        updateStatus("Buscando relatorios publicos no GitHub...");
+        updateStatus("Buscando dados publicos no GitHub...");
 
-        const [weeklyFiles, aiFiles] = await Promise.all([
-          fetchJson(`${API_BASE}/data/weekly_reports`),
-          fetchJson(`${API_BASE}/data/ai_reports`)
+        const [aiFiles, historyText] = await Promise.all([
+          fetchJson(`${API_BASE}/data/ai_reports`),
+          fetchText(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/data/performance_history.csv`)
         ]);
 
-        const latestWeekly = latestFileByName(weeklyFiles, ".md");
         const latestAi = latestFileByName(aiFiles, "_ai.md");
+        const historyRows = parseCsv(historyText)
+          .filter((row) => row.activity_id && row.start_date_local)
+          .sort((a, b) => (a.start_date_local || "").localeCompare(b.start_date_local || ""));
 
-        if (!latestWeekly || !latestAi) {
-          updateStatus("Ainda nao existem relatorios suficientes para montar o resumo.");
+        latestWorkout = historyRows.at(-1) || null;
+
+        if (!latestWorkout) {
+          updateStatus("Ainda nao existe historico suficiente para montar o resumo.");
           return;
         }
 
-        const [weeklyReport, aiReport] = await Promise.all([
-          fetchText(latestWeekly.download_url),
-          fetchText(latestAi.download_url)
+        const [aiReport, workoutReport] = await Promise.all([
+          latestAi ? fetchText(latestAi.download_url) : Promise.resolve(""),
+          fetchText(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/data/reports/${latestWorkout.activity_id}.md`)
+            .catch(() => "")
         ]);
 
         latestAiMarkdown = aiReport;
+        latestWorkoutMarkdown = workoutReport;
 
-        setMetric("metric-week", extractWeekLabel(latestWeekly.name));
-        setMetric("metric-week-note", extractPeriod(weeklyReport));
-        setMetric("metric-sessions", extractMetric(weeklyReport, "Sessoes"));
-        setMetric("metric-time", extractMetric(weeklyReport, "Tempo total"));
-        setMetric("metric-load", extractMetric(weeklyReport, "Carga sRPE total"));
+        updateWorkoutMetrics();
+        loadContext();
 
-        updateStatus("Resumo carregado a partir do report semanal mais recente.");
+        updateStatus("Resumo carregado a partir do treino mais recente sincronizado.");
       } catch (error) {
-        updateStatus("Nao consegui carregar os relatorios publicos do GitHub.");
+        updateStatus("Nao consegui carregar os dados publicos do GitHub.");
       }
     }
 
@@ -662,7 +926,29 @@
       }
     }
 
+    async function copyLatestWorkoutReport() {
+      const summary = buildWorkoutSummary();
+      if (!summary) {
+        showToast("Ultimo treino ainda nao carregado");
+        return;
+      }
+
+      saveContext();
+      try {
+        await navigator.clipboard.writeText(summary);
+        showToast("Resumo do treino copiado");
+      } catch (error) {
+        showToast("Falha ao copiar treino");
+      }
+    }
+
+    ["sleep-hours", "sleep-quality", "recovery", "weight-start", "weight-end"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", saveContext);
+      document.getElementById(id).addEventListener("change", saveContext);
+    });
+
     document.getElementById("copy-ai-report").addEventListener("click", copyLatestAiReport);
+    document.getElementById("copy-workout-report").addEventListener("click", copyLatestWorkoutReport);
     loadLatestReports();
   </script>
 </body>

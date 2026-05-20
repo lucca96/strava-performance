@@ -37,6 +37,8 @@ def numeric_columns(df):
         "moving_time_min",
         "average_heartrate",
         "max_heartrate",
+        "hr_initial_5min",
+        "hr_final_5min",
         "cardiac_drift_pct",
         "perceived_exertion",
         "session_rpe_load",

@@ -6,7 +6,7 @@ from pathlib import Path
 import pandas as pd
 
 import main
-from src.analysis import classify_activity, render_report, upsert_history
+from src.analysis import build_activity_record, classify_activity, render_report, upsert_history
 from src.ai_ready_report import ai_ready_filename, write_ai_ready_report
 from src.client import ApiBudgetExceeded, StravaClient
 from src.weekly_report import weekly_filename, write_all_weekly_reports, write_weekly_report
@@ -181,6 +181,29 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(classify_activity("Preparação Física CDPD"), "preparacao_fisica")
         self.assertEqual(classify_activity("PreparaÃ§Ã£o FÃ­sica CDPD"), "preparacao_fisica")
         self.assertEqual(classify_activity("Pedalada na 040"), "outros")
+
+    def test_activity_record_includes_initial_and_final_5min_hr(self):
+        activity = {
+            "id": 1,
+            "name": "NoGi",
+            "type": "Workout",
+            "start_date_local": "2025-01-06T20:00:00Z",
+        }
+        details = {
+            "id": 1,
+            "moving_time": 700,
+            "average_heartrate": 130,
+            "max_heartrate": 170,
+        }
+        streams = {
+            "time": {"data": [0, 60, 300, 400, 700]},
+            "heartrate": {"data": [100, 110, 130, 150, 170]},
+        }
+
+        record = build_activity_record(activity, details, streams=streams, hr_max=180)
+
+        self.assertEqual(record["hr_initial_5min"], 113.33333333333333)
+        self.assertEqual(record["hr_final_5min"], 160.0)
 
     def test_weekly_report_uses_iso_week_filename(self):
         self.assertEqual(weekly_filename(2025, 2), "2025_semana_02.md")
