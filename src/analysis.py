@@ -83,6 +83,8 @@ def analyze_hr_from_streams(streams, hr_max):
     result = {
         "hr_avg_stream": float(df["heartrate"].mean()),
         "hr_max_stream": int(df["heartrate"].max()),
+        "hr_initial_5min": mean_hr_window(df, "initial"),
+        "hr_final_5min": mean_hr_window(df, "final"),
         "hr_max_estimated": hr_max,
         "cardiac_drift_pct": float(cardiac_drift_pct),
     }
@@ -92,6 +94,21 @@ def analyze_hr_from_streams(streams, hr_max):
         result[f"{zone.lower()}_pct"] = float(zone_pct.get(zone, 0))
 
     return result, []
+
+
+def mean_hr_window(df, position, seconds=300):
+    if df.empty:
+        return None
+
+    if position == "initial":
+        window = df[df["time"] <= seconds]
+    else:
+        end_time = df["time"].max()
+        window = df[df["time"] >= max(0, end_time - seconds)]
+
+    if window.empty:
+        return None
+    return float(window["heartrate"].mean())
 
 
 def analyze_pace_from_laps(details, laps):
@@ -248,7 +265,9 @@ def render_report(record):
         "## Frequencia cardiaca",
         "",
         f"- FC media: {_fmt(record.get('average_heartrate'), 1)}",
+        f"- FC inicial 5 min: {_fmt(record.get('hr_initial_5min'), 1)}",
         f"- FC maxima: {_fmt(record.get('max_heartrate'), 1)}",
+        f"- FC final 5 min: {_fmt(record.get('hr_final_5min'), 1)}",
         f"- Cardiac drift: {_fmt(record.get('cardiac_drift_pct'), 1)}%",
         f"- Z1: {_fmt(record.get('z1_min'), 1)} min ({_fmt(record.get('z1_pct'), 1)}%)",
         f"- Z2: {_fmt(record.get('z2_min'), 1)} min ({_fmt(record.get('z2_pct'), 1)}%)",

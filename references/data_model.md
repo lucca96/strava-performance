@@ -55,6 +55,8 @@ Frequencia cardiaca:
 - `max_heartrate`
 - `hr_avg_stream`
 - `hr_max_stream`
+- `hr_initial_5min`
+- `hr_final_5min`
 - `hr_max_estimated`
 - `cardiac_drift_pct`
 
@@ -89,6 +91,16 @@ Status tecnico:
 - `analysis_status`
 - `missing_data`
 - `completed_at`
+
+Campos de contexto informados no launcher do iPhone:
+
+- `sleep_hours`
+- `sleep_quality`: `bom`, `normal` ou `ruim`
+- `recovery`: `bom`, `normal` ou `ruim`
+- `weight_start_kg`
+- `weight_end_kg`
+
+Esses campos entram no resumo copiado pelo app. Como o launcher publico nao grava no repositorio, eles ficam salvos localmente no navegador do iPhone por atividade.
 
 ## Classificacao de atividade
 
