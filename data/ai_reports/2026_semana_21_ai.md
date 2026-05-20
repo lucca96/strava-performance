@@ -78,7 +78,9 @@ Analise esta semana como preparador fisico de um atleta de grappling. Foque em c
 - perceived_exertion: 5.0
 - session_rpe_load: 497.4166666666667
 - average_heartrate: 108.9
+- hr_initial_5min: 82.26842105263158
 - max_heartrate: 150.0
+- hr_final_5min: 110.37974683544304
 - cardiac_drift_pct: 19.19421261896667
 - z1_min: 34.733333333333334
 - z2_min: 37.0
