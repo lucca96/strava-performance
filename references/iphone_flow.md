@@ -130,6 +130,8 @@ Objetivo:
 - abrir `shortcuts://run-shortcut?...` para acionar os atalhos ja configurados.
 - ler os relatorios publicos do repo para mostrar um resumo da ultima semana.
 - copiar o Markdown AI-ready mais recente para o clipboard do iPhone.
+- mostrar o status publico mais recente dos workflows `iPhone sync` e `iPhone weekly`.
+- copiar o AI-ready com um bloco inicial de contexto para a AI, incluindo status do GitHub Actions, ultimo treino e contexto preenchido no iPhone.
 - expor a identidade visual do launcher com icone proprio.
 - usar `apple-touch-icon` em PNG para evitar fallback do Safari/iPhone.
 - o launcher atualmente usa `icon-app.png` como favicon, logo do header e apple-touch-icon.
@@ -162,6 +164,7 @@ Motivo tecnico:
 - um HTML puro no iPhone nao deve carregar o token do GitHub no client;
 - usar o esquema `shortcuts://` mantem o segredo dentro do Atalho, nao da pagina.
 - como o repo esta publico, o launcher pode ler `data/weekly_reports/` e `data/ai_reports/` pela API publica do GitHub.
+- o launcher tambem consulta a API publica de GitHub Actions para exibir se os ultimos workflows terminaram com sucesso, falha ou ainda estao rodando.
 - o GitHub Pages publica site estatico publico; nao colocar segredos nele.
 
 Restricao importante:

@@ -444,6 +444,24 @@
       line-height: 1.45;
     }
 
+    .status.success {
+      border-color: var(--green-border);
+      background: var(--green-dim);
+      color: var(--text);
+    }
+
+    .status.failure {
+      border-color: rgba(232, 98, 42, 0.42);
+      background: var(--orange-dim);
+      color: var(--text);
+    }
+
+    .status.running {
+      border-color: var(--blue-border);
+      background: var(--blue-dim);
+      color: var(--text);
+    }
+
     .toast {
       position: fixed;
       left: 50%;
@@ -493,6 +511,7 @@
       </section>
 
       <div id="status" class="status">Carregando treino mais recente...</div>
+      <div id="action-status" class="status">Carregando status do GitHub Actions...</div>
 
       <section>
         <div class="section-title">Ultimo treino sincronizado</div>
@@ -598,7 +617,7 @@
             <div class="action-icon">M</div>
             <div class="action-copy">
               <strong>Copiar AI-ready</strong>
-              <span>Copia o Markdown AI-ready mais recente para colar direto no chat com a IA.</span>
+              <span>Copia contexto para a IA mais o Markdown AI-ready mais recente.</span>
             </div>
             <div class="action-arrow">></div>
           </button>
@@ -656,9 +675,11 @@
     const REPO_OWNER = "lucca96";
     const REPO_NAME = "strava-performance";
     const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+    const REPO_API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
     let latestAiMarkdown = "";
     let latestWorkoutMarkdown = "";
     let latestWorkout = null;
+    let latestActionSummary = "";
 
     async function fetchJson(url) {
       const response = await fetch(url, { headers: { "Accept": "application/vnd.github+json" } });
@@ -727,6 +748,15 @@
 
     function updateStatus(message) {
       document.getElementById("status").textContent = message;
+    }
+
+    function updateActionStatus(message, state = "") {
+      const element = document.getElementById("action-status");
+      element.textContent = message;
+      element.classList.remove("success", "failure", "running");
+      if (state) {
+        element.classList.add(state);
+      }
     }
 
     function setMetric(id, value) {
@@ -818,6 +848,94 @@
         return "--";
       }
       return `${match[1]}-W${match[2]}`;
+    }
+
+    function formatDateTime(value) {
+      if (!value) {
+        return "";
+      }
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) {
+        return value;
+      }
+      return date.toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function actionState(run) {
+      if (!run) {
+        return { label: "sem execucao encontrada", className: "" };
+      }
+      if (run.status !== "completed") {
+        return { label: run.status || "em andamento", className: "running" };
+      }
+      if (run.conclusion === "success") {
+        return { label: "sucesso", className: "success" };
+      }
+      return { label: run.conclusion || "falhou", className: "failure" };
+    }
+
+    async function loadWorkflowRun(workflowFile) {
+      const payload = await fetchJson(`${REPO_API_BASE}/actions/workflows/${workflowFile}/runs?per_page=1&branch=main`);
+      return (payload.workflow_runs || [])[0] || null;
+    }
+
+    async function loadActionStatus() {
+      try {
+        const [syncRun, weeklyRun] = await Promise.all([
+          loadWorkflowRun("iphone-sync.yml"),
+          loadWorkflowRun("iphone-weekly.yml")
+        ]);
+        const sync = actionState(syncRun);
+        const weekly = actionState(weeklyRun);
+        const state = sync.className === "failure" || weekly.className === "failure"
+          ? "failure"
+          : sync.className === "running" || weekly.className === "running"
+            ? "running"
+            : sync.className || weekly.className;
+
+        latestActionSummary = [
+          `iPhone sync: ${sync.label}${syncRun ? ` (${formatDateTime(syncRun.updated_at)})` : ""}`,
+          `iPhone weekly: ${weekly.label}${weeklyRun ? ` (${formatDateTime(weeklyRun.updated_at)})` : ""}`
+        ].join(" | ");
+
+        updateActionStatus(`GitHub Actions - ${latestActionSummary}`, state);
+      } catch (error) {
+        latestActionSummary = "nao foi possivel consultar o status publico do GitHub Actions";
+        updateActionStatus("Nao consegui carregar o status do GitHub Actions.", "failure");
+      }
+    }
+
+    function buildAiReadyClipboard() {
+      const context = readContext();
+      const lines = [
+        "# Contexto para AI",
+        "",
+        "Voce vai receber um relatorio AI-ready de performance esportiva gerado a partir de Strava.",
+        "Analise como preparador fisico de um atleta de grappling. Priorize decisoes praticas de treino, controle de fadiga, equilibrio entre luta e preparacao fisica, e risco de sobrecarga.",
+        "",
+        "## Estado do pipeline",
+        "",
+        `- GitHub Actions: ${latestActionSummary || "status ainda nao carregado"}`,
+        `- Ultimo treino sincronizado: ${latestWorkout ? `${latestWorkout.name || "sem titulo"} (${latestWorkout.activity_id || "sem id"})` : "sem dados"}`,
+        "",
+        "## Contexto informado no iPhone",
+        "",
+        `- Horas de sono: ${context.sleepHours || "sem dados"}`,
+        `- Qualidade do sono: ${context.sleepQuality || "sem dados"}`,
+        `- Recuperacao: ${context.recovery || "sem dados"}`,
+        `- Peso inicio do treino: ${context.weightStart ? `${context.weightStart} kg` : "sem dados"}`,
+        `- Peso final do treino: ${context.weightEnd ? `${context.weightEnd} kg` : "sem dados"}`,
+        "",
+        "## Relatorio AI-ready",
+        "",
+        latestAiMarkdown.trim()
+      ];
+      return `${lines.join("\n")}\n`;
     }
 
     function buildWorkoutSummary() {
@@ -918,9 +1036,10 @@
         return;
       }
 
+      saveContext();
       try {
-        await navigator.clipboard.writeText(latestAiMarkdown);
-        showToast("Markdown AI-ready copiado");
+        await navigator.clipboard.writeText(buildAiReadyClipboard());
+        showToast("Contexto AI-ready copiado");
       } catch (error) {
         showToast("Falha ao copiar Markdown");
       }
@@ -949,7 +1068,15 @@
 
     document.getElementById("copy-ai-report").addEventListener("click", copyLatestAiReport);
     document.getElementById("copy-workout-report").addEventListener("click", copyLatestWorkoutReport);
+    window.addEventListener("focus", loadActionStatus);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        loadActionStatus();
+      }
+    });
     loadLatestReports();
+    loadActionStatus();
+    setInterval(loadActionStatus, 30000);
   </script>
 </body>
 </html>
