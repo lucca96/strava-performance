@@ -51,3 +51,5 @@
 - Fluxo recomendado para iPhone: iOS Shortcuts dispara GitHub Actions, que roda `python -B main.py sync`.
 - Launcher HTML para iPhone adicionado em `iphone_app/index.html`.
 - Launcher HTML pode ser publicado em GitHub Pages para abrir no Safari e adicionar a Tela de Inicio.
+- Launcher passou a exibir status publico dos workflows `iPhone sync` e `iPhone weekly`.
+- Botao `Copiar AI-ready` passou a copiar contexto para a AI antes do Markdown gerado.

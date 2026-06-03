@@ -103,6 +103,8 @@ Uso pelo iPhone:
 - o sync tambem gera `data/ai_reports/YYYY_semana_WW_ai.md`;
 - existe workflow separado para `weekly` + `ai-ready`;
 - existe launcher HTML em `iphone_app/index.html` para abrir os atalhos locais;
+- o launcher mostra o status publico mais recente dos workflows `iPhone sync` e `iPhone weekly`;
+- o botao `Copiar AI-ready` inclui contexto para a AI antes do Markdown semanal gerado;
 - existe deploy dedicado do launcher em GitHub Pages;
 - detalhes em `references/iphone_flow.md`.
 
