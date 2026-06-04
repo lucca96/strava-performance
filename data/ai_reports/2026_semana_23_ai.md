@@ -29,38 +29,40 @@ Responda em portugues, com:
 
 ## Resumo
 
-- Periodo observado: 2026-06-02 a 2026-06-02
-- Sessoes: 1
-- Tempo total: 68.3 min
-- Carga sRPE total: 341.6
-- RPE medio: 5.0
-- FC media da semana: 137.9
-- FC maxima da semana: 178.0
-- Cardiac drift medio: 5.1%
-- Delta carga vs semana anterior: -31.3%
-- Delta minutos vs semana anterior: -31.3%
+- Periodo observado: 2026-06-02 a 2026-06-03
+- Sessoes: 2
+- Tempo total: 202.3 min
+- Carga sRPE total: 1145.5
+- RPE medio: 5.5
+- FC media da semana: 143.6
+- FC maxima da semana: 184.0
+- Cardiac drift medio: 10.8%
+- Delta carga vs semana anterior: 130.3%
+- Delta minutos vs semana anterior: 103.4%
 
 ## Carga por categoria
 
-- grappling: 0 sessoes | 0.0 min | sRPE 0.0
+- grappling: 1 sessoes | 134.0 min | sRPE 803.9
 - preparacao_fisica: 1 sessoes | 68.3 min | sRPE 341.6
 - outros: 0 sessoes | 0.0 min | sRPE 0.0
 
 ## Zonas de frequencia cardiaca
 
-- Z1: 6.9 min (11.0%)
-- Z2: 8.7 min (13.9%)
-- Z3: 13.5 min (21.5%)
-- Z4: 19.1 min (30.5%)
-- Z5: 14.4 min (23.1%)
+- Z1: 14.7 min (11.5%)
+- Z2: 16.8 min (13.1%)
+- Z3: 32.1 min (25.1%)
+- Z4: 38.3 min (30.0%)
+- Z5: 25.9 min (20.3%)
 
 ## Sessoes da semana
 
 - 2026-06-02 | preparacao_fisica | Preparação Fisica CDPD | 68.3 min | RPE 5.0 | sRPE 341.6
+- 2026-06-03 | grappling | Wrestling + Luta Livre no QG | 134.0 min | RPE 6.0 | sRPE 803.9
 
 ## Alertas e insights
 
-- Semana sem alertas fortes pelas regras atuais; interpretar junto com contexto de competicao, sono e dor.
+- Cardiac drift medio elevado; pode indicar fadiga, calor, baixa recuperacao ou intensidade mal distribuida.
+- Carga semanal subiu mais de 30% vs semana anterior; risco de aumento brusco de carga.
 
 ## Prompt para AI
 
@@ -86,6 +88,25 @@ Analise esta semana como preparador fisico de um atleta de grappling. Foque em c
 - z3_min: 13.466666666666669
 - z4_min: 19.066666666666663
 - z5_min: 14.45
+
+### 2026-06-03 - Wrestling + Luta Livre no QG
+
+- activity_id: 18777608704
+- type: Workout
+- category: grappling
+- moving_time_min: 133.98333333333332
+- perceived_exertion: 6.0
+- session_rpe_load: 803.8999999999999
+- average_heartrate: 149.2
+- hr_initial_5min: 107.12040133779264
+- max_heartrate: 184.0
+- hr_final_5min: 141.13780918727915
+- cardiac_drift_pct: 16.502331624248892
+- z1_min: 7.85
+- z2_min: 8.05
+- z3_min: 18.6
+- z4_min: 19.266666666666666
+- z5_min: 11.466666666666669
 
 ## Observacoes de interpretacao
 
