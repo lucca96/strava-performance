@@ -104,7 +104,9 @@ Uso pelo iPhone:
 - existe workflow separado para `weekly` + `ai-ready`;
 - existe launcher HTML em `iphone_app/index.html` para abrir os atalhos locais;
 - o launcher mostra o status publico mais recente dos workflows `iPhone sync` e `iPhone weekly`;
+- o launcher tem botao `Atualizar app` para recarregar imediatamente GitHub Actions, historico e reports;
 - o botao `Copiar AI-ready` inclui contexto para a AI antes do Markdown semanal gerado;
+- o historico persistente fica em `data/performance_history.csv`; o contexto digitado no app fica apenas no iPhone;
 - existe deploy dedicado do launcher em GitHub Pages;
 - detalhes em `references/iphone_flow.md`.
 

@@ -53,3 +53,4 @@
 - Launcher HTML pode ser publicado em GitHub Pages para abrir no Safari e adicionar a Tela de Inicio.
 - Launcher passou a exibir status publico dos workflows `iPhone sync` e `iPhone weekly`.
 - Botao `Copiar AI-ready` passou a copiar contexto para a AI antes do Markdown gerado.
+- Launcher ganhou botao `Atualizar app` para recarregar GitHub Actions, historico e reports manualmente.

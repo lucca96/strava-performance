@@ -302,6 +302,11 @@
       font: inherit;
     }
 
+    .action-button:disabled {
+      cursor: wait;
+      opacity: 0.68;
+    }
+
     .action-card:active,
     .action-button:active {
       transform: scale(0.985);
@@ -631,6 +636,15 @@
             <div class="action-arrow">></div>
           </button>
 
+          <button id="refresh-data" class="action-button github" type="button">
+            <div class="action-icon">U</div>
+            <div class="action-copy">
+              <strong>Atualizar app</strong>
+              <span>Recarrega status do GitHub Actions, historico, reports e AI-ready agora.</span>
+            </div>
+            <div class="action-arrow">></div>
+          </button>
+
           <a class="action-card github" href="https://github.com/lucca96/strava-performance/actions">
             <div class="action-icon">G</div>
             <div class="action-copy">
@@ -680,9 +694,10 @@
     let latestWorkoutMarkdown = "";
     let latestWorkout = null;
     let latestActionSummary = "";
+    let refreshInProgress = false;
 
     async function fetchJson(url) {
-      const response = await fetch(url, { headers: { "Accept": "application/vnd.github+json" } });
+      const response = await fetch(url, { cache: "no-store", headers: { "Accept": "application/vnd.github+json" } });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
@@ -690,11 +705,25 @@
     }
 
     async function fetchText(url) {
-      const response = await fetch(url);
+      const response = await fetch(url, { cache: "no-store" });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
       return response.text();
+    }
+
+    function contentUrl(path) {
+      return `${API_BASE}/${path}?ref=main`;
+    }
+
+    function decodeGithubContent(file) {
+      const binary = atob((file.content || "").replace(/\s/g, ""));
+      const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+      return new TextDecoder("utf-8").decode(bytes);
+    }
+
+    async function fetchRepoText(path) {
+      return decodeGithubContent(await fetchJson(contentUrl(path)));
     }
 
     function latestFileByName(files, suffix) {
@@ -997,7 +1026,7 @@
 
         const [aiFiles, historyText] = await Promise.all([
           fetchJson(`${API_BASE}/data/ai_reports`),
-          fetchText(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/data/performance_history.csv`)
+          fetchRepoText("data/performance_history.csv")
         ]);
 
         const latestAi = latestFileByName(aiFiles, "_ai.md");
@@ -1013,8 +1042,8 @@
         }
 
         const [aiReport, workoutReport] = await Promise.all([
-          latestAi ? fetchText(latestAi.download_url) : Promise.resolve(""),
-          fetchText(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/data/reports/${latestWorkout.activity_id}.md`)
+          latestAi ? fetchRepoText(`data/ai_reports/${latestAi.name}`) : Promise.resolve(""),
+          fetchRepoText(`data/reports/${latestWorkout.activity_id}.md`)
             .catch(() => "")
         ]);
 
@@ -1027,6 +1056,30 @@
         updateStatus("Resumo carregado a partir do treino mais recente sincronizado.");
       } catch (error) {
         updateStatus("Nao consegui carregar os dados publicos do GitHub.");
+      }
+    }
+
+    async function refreshAppData({ showDone = false } = {}) {
+      if (refreshInProgress) {
+        return;
+      }
+
+      refreshInProgress = true;
+      const button = document.getElementById("refresh-data");
+      if (button) {
+        button.disabled = true;
+      }
+
+      try {
+        await Promise.all([loadLatestReports(), loadActionStatus()]);
+        if (showDone) {
+          showToast("App atualizado");
+        }
+      } finally {
+        refreshInProgress = false;
+        if (button) {
+          button.disabled = false;
+        }
       }
     }
 
@@ -1068,14 +1121,14 @@
 
     document.getElementById("copy-ai-report").addEventListener("click", copyLatestAiReport);
     document.getElementById("copy-workout-report").addEventListener("click", copyLatestWorkoutReport);
-    window.addEventListener("focus", loadActionStatus);
+    document.getElementById("refresh-data").addEventListener("click", () => refreshAppData({ showDone: true }));
+    window.addEventListener("focus", () => refreshAppData());
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
-        loadActionStatus();
+        refreshAppData();
       }
     });
-    loadLatestReports();
-    loadActionStatus();
+    refreshAppData();
     setInterval(loadActionStatus, 30000);
   </script>
 </body>
