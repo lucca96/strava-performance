@@ -132,6 +132,7 @@ Objetivo:
 - copiar o Markdown AI-ready mais recente para o clipboard do iPhone.
 - mostrar o status publico mais recente dos workflows `iPhone sync` e `iPhone weekly`.
 - copiar o AI-ready com um bloco inicial de contexto para a AI, incluindo status do GitHub Actions, ultimo treino e contexto preenchido no iPhone.
+- oferecer um botao `Atualizar app` para recarregar imediatamente status do GitHub Actions, historico, reports e AI-ready.
 - expor a identidade visual do launcher com icone proprio.
 - usar `apple-touch-icon` em PNG para evitar fallback do Safari/iPhone.
 - o launcher atualmente usa `icon-app.png` como favicon, logo do header e apple-touch-icon.
@@ -164,6 +165,8 @@ Motivo tecnico:
 - um HTML puro no iPhone nao deve carregar o token do GitHub no client;
 - usar o esquema `shortcuts://` mantem o segredo dentro do Atalho, nao da pagina.
 - como o repo esta publico, o launcher pode ler `data/weekly_reports/` e `data/ai_reports/` pela API publica do GitHub.
+- o historico persistente de atividades fica salvo em `data/performance_history.csv` e e commitado pelo workflow `iPhone sync`.
+- o contexto manual preenchido no app fica salvo somente no proprio iPhone via `localStorage`, separado por `activity_id`.
 - o launcher tambem consulta a API publica de GitHub Actions para exibir se os ultimos workflows terminaram com sucesso, falha ou ainda estao rodando.
 - o GitHub Pages publica site estatico publico; nao colocar segredos nele.
 
