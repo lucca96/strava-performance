@@ -8,7 +8,7 @@ import pandas as pd
 import main
 from src.analysis import build_activity_record, classify_activity, render_report, upsert_history
 from src.ai_ready_report import ai_ready_filename, write_ai_ready_report
-from src.client import ApiBudgetExceeded, StravaClient
+from src.client import ApiBudgetExceeded, StravaApiError, StravaClient
 from src.weekly_report import weekly_filename, write_all_weekly_reports, write_weekly_report
 
 
@@ -128,6 +128,25 @@ class PipelineTests(unittest.TestCase):
 
         self.assertEqual(client.calls_made, 1)
         self.assertEqual(len(session.calls), 1)
+
+    def test_strava_api_error_includes_response_body(self):
+        session = FakeSession(
+            [
+                FakeResponse(200, {"access_token": "abc", "expires_at": 9999999999}),
+                FakeResponse(
+                    403,
+                    {"message": "Forbidden", "errors": [{"resource": "Application", "field": "Status", "code": "Inactive"}]},
+                    text='{"message":"Forbidden"}',
+                ),
+            ]
+        )
+        client = StravaClient(data_dir=self.data_dir, max_calls=3, session=session)
+
+        with self.assertRaises(StravaApiError) as context:
+            client.get_summary_page(1, force_refresh=True)
+
+        self.assertIn("athlete/activities", str(context.exception))
+        self.assertIn("Inactive", str(context.exception))
 
     def test_history_upsert_does_not_duplicate_activity(self):
         record = {

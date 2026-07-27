@@ -21,6 +21,10 @@ class ApiBudgetExceeded(RuntimeError):
     pass
 
 
+class StravaApiError(RuntimeError):
+    pass
+
+
 class StravaClient:
     def __init__(self, data_dir=DEFAULT_DATA_DIR, max_calls=None, session=None):
         self.data_dir = Path(data_dir)
@@ -123,7 +127,8 @@ class StravaClient:
             "grant_type": "refresh_token",
         }
         response = self._request("POST", OAUTH_URL, "oauth/token", data=payload)
-        response.raise_for_status()
+        if response.status_code != 200:
+            raise StravaApiError(self._format_error(response, "oauth/token"))
         token = response.json()
         self._write_json(token_path, token)
         return token["access_token"]
@@ -167,11 +172,18 @@ class StravaClient:
                 }
                 self._write_json(cache_path, marker)
                 return None
-            response.raise_for_status()
+            raise StravaApiError(self._format_error(response, endpoint))
 
         data = response.json()
         self._write_json(cache_path, data)
         return data
+
+    def _format_error(self, response, endpoint):
+        try:
+            body = response.json()
+        except ValueError:
+            body = response.text
+        return f"Strava API error on {endpoint}: HTTP {response.status_code} - {body}"
 
     def get_summary_page(self, page, per_page=30, force_refresh=False):
         cache_path = self.cache_dir / "summary_pages" / f"page_{page:03d}.json"

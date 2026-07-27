@@ -105,6 +105,7 @@ Uso pelo iPhone:
 - existe launcher HTML em `iphone_app/index.html` para abrir os atalhos locais;
 - o launcher mostra o status publico mais recente dos workflows `iPhone sync` e `iPhone weekly`;
 - o launcher tem botao `Atualizar app` para recarregar imediatamente GitHub Actions, historico e reports;
+- o launcher nao deve fazer polling frequente na API publica do GitHub, porque isso pode bater rate limit no iPhone;
 - o botao `Copiar AI-ready` inclui contexto para a AI antes do Markdown semanal gerado;
 - o historico persistente fica em `data/performance_history.csv`; o contexto digitado no app fica apenas no iPhone;
 - existe deploy dedicado do launcher em GitHub Pages;
@@ -137,3 +138,4 @@ Em 2026-05-06:
 - Nao expor `.env` ou token em prompts para AI.
 - Nao rodar scripts antigos de exploracao sem entender limite/cache.
 - `get_token.py` e utilitario de OAuth inicial, nao pipeline de coleta.
+- Erro Strava `Application Status Inactive`: reativar o aplicativo no Strava API Settings e validar se a conta dona do app atende as exigencias atuais do Developer Program.

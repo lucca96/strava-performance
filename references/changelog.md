@@ -54,3 +54,5 @@
 - Launcher passou a exibir status publico dos workflows `iPhone sync` e `iPhone weekly`.
 - Botao `Copiar AI-ready` passou a copiar contexto para a AI antes do Markdown gerado.
 - Launcher ganhou botao `Atualizar app` para recarregar GitHub Actions, historico e reports manualmente.
+- Launcher deixou de fazer polling frequente da API publica do GitHub e passou a manter fallback local do ultimo carregamento bom.
+- Cliente Strava passou a mostrar corpo estruturado dos erros HTTP para diagnosticar `Application Status Inactive` no GitHub Actions.

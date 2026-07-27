@@ -690,6 +690,7 @@
     const REPO_NAME = "strava-performance";
     const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents`;
     const REPO_API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
+    const APP_CACHE_KEY = "forca-lab:last-loaded-data";
     let latestAiMarkdown = "";
     let latestWorkoutMarkdown = "";
     let latestWorkout = null;
@@ -704,14 +705,6 @@
       return response.json();
     }
 
-    async function fetchText(url) {
-      const response = await fetch(url, { cache: "no-store" });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-      return response.text();
-    }
-
     function contentUrl(path) {
       return `${API_BASE}/${path}?ref=main`;
     }
@@ -724,6 +717,45 @@
 
     async function fetchRepoText(path) {
       return decodeGithubContent(await fetchJson(contentUrl(path)));
+    }
+
+    function saveAppCache() {
+      if (!latestWorkout) {
+        return;
+      }
+      localStorage.setItem(APP_CACHE_KEY, JSON.stringify({
+        savedAt: new Date().toISOString(),
+        latestAiMarkdown,
+        latestWorkoutMarkdown,
+        latestWorkout,
+        latestActionSummary
+      }));
+    }
+
+    function restoreAppCache() {
+      const saved = localStorage.getItem(APP_CACHE_KEY);
+      if (!saved) {
+        return false;
+      }
+      try {
+        const parsed = JSON.parse(saved);
+        latestAiMarkdown = parsed.latestAiMarkdown || "";
+        latestWorkoutMarkdown = parsed.latestWorkoutMarkdown || "";
+        latestWorkout = parsed.latestWorkout || null;
+        latestActionSummary = parsed.latestActionSummary || "";
+        if (!latestWorkout) {
+          return false;
+        }
+        updateWorkoutMetrics();
+        loadContext();
+        updateStatus(`Mostrando ultimo dado salvo neste iPhone (${formatDateTime(parsed.savedAt)}). Toque em Atualizar app para tentar de novo.`);
+        if (latestActionSummary) {
+          updateActionStatus(`GitHub Actions - ${latestActionSummary}`, "");
+        }
+        return true;
+      } catch (error) {
+        return false;
+      }
     }
 
     function latestFileByName(files, suffix) {
@@ -879,6 +911,28 @@
       return `${match[1]}-W${match[2]}`;
     }
 
+    function isoWeekParts(value) {
+      const source = value ? value.slice(0, 10) : "";
+      const match = source.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!match) {
+        return null;
+      }
+      const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+      const day = date.getUTCDay() || 7;
+      date.setUTCDate(date.getUTCDate() + 4 - day);
+      const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+      const week = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+      return { year: date.getUTCFullYear(), week };
+    }
+
+    function aiReadyPathForWorkout(workout) {
+      const parts = isoWeekParts(workout && workout.start_date_local);
+      if (!parts) {
+        return "";
+      }
+      return `data/ai_reports/${parts.year}_semana_${String(parts.week).padStart(2, "0")}_ai.md`;
+    }
+
     function formatDateTime(value) {
       if (!value) {
         return "";
@@ -908,17 +962,12 @@
       return { label: run.conclusion || "falhou", className: "failure" };
     }
 
-    async function loadWorkflowRun(workflowFile) {
-      const payload = await fetchJson(`${REPO_API_BASE}/actions/workflows/${workflowFile}/runs?per_page=1&branch=main`);
-      return (payload.workflow_runs || [])[0] || null;
-    }
-
     async function loadActionStatus() {
       try {
-        const [syncRun, weeklyRun] = await Promise.all([
-          loadWorkflowRun("iphone-sync.yml"),
-          loadWorkflowRun("iphone-weekly.yml")
-        ]);
+        const payload = await fetchJson(`${REPO_API_BASE}/actions/runs?per_page=20&branch=main`);
+        const runs = payload.workflow_runs || [];
+        const syncRun = runs.find((run) => run.name === "iPhone sync") || null;
+        const weeklyRun = runs.find((run) => run.name === "iPhone weekly") || null;
         const sync = actionState(syncRun);
         const weekly = actionState(weeklyRun);
         const state = sync.className === "failure" || weekly.className === "failure"
@@ -933,9 +982,10 @@
         ].join(" | ");
 
         updateActionStatus(`GitHub Actions - ${latestActionSummary}`, state);
+        saveAppCache();
       } catch (error) {
-        latestActionSummary = "nao foi possivel consultar o status publico do GitHub Actions";
-        updateActionStatus("Nao consegui carregar o status do GitHub Actions.", "failure");
+        const rateLimit = error.message === "HTTP 403" ? " Limite publico do GitHub pode ter sido atingido." : "";
+        updateActionStatus(`Nao consegui carregar o status do GitHub Actions.${rateLimit}`, "failure");
       }
     }
 
@@ -1024,12 +1074,7 @@
       try {
         updateStatus("Buscando dados publicos no GitHub...");
 
-        const [aiFiles, historyText] = await Promise.all([
-          fetchJson(`${API_BASE}/data/ai_reports`),
-          fetchRepoText("data/performance_history.csv")
-        ]);
-
-        const latestAi = latestFileByName(aiFiles, "_ai.md");
+        const historyText = await fetchRepoText("data/performance_history.csv");
         const historyRows = parseCsv(historyText)
           .filter((row) => row.activity_id && row.start_date_local)
           .sort((a, b) => (a.start_date_local || "").localeCompare(b.start_date_local || ""));
@@ -1041,8 +1086,9 @@
           return;
         }
 
+        const aiReadyPath = aiReadyPathForWorkout(latestWorkout);
         const [aiReport, workoutReport] = await Promise.all([
-          latestAi ? fetchRepoText(`data/ai_reports/${latestAi.name}`) : Promise.resolve(""),
+          aiReadyPath ? fetchRepoText(aiReadyPath).catch(() => "") : Promise.resolve(""),
           fetchRepoText(`data/reports/${latestWorkout.activity_id}.md`)
             .catch(() => "")
         ]);
@@ -1052,10 +1098,14 @@
 
         updateWorkoutMetrics();
         loadContext();
+        saveAppCache();
 
         updateStatus("Resumo carregado a partir do treino mais recente sincronizado.");
       } catch (error) {
-        updateStatus("Nao consegui carregar os dados publicos do GitHub.");
+        const rateLimit = error.message === "HTTP 403" ? " Limite publico do GitHub pode ter sido atingido." : "";
+        if (!restoreAppCache()) {
+          updateStatus(`Nao consegui carregar os dados publicos do GitHub.${rateLimit}`);
+        }
       }
     }
 
@@ -1122,14 +1172,7 @@
     document.getElementById("copy-ai-report").addEventListener("click", copyLatestAiReport);
     document.getElementById("copy-workout-report").addEventListener("click", copyLatestWorkoutReport);
     document.getElementById("refresh-data").addEventListener("click", () => refreshAppData({ showDone: true }));
-    window.addEventListener("focus", () => refreshAppData());
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) {
-        refreshAppData();
-      }
-    });
     refreshAppData();
-    setInterval(loadActionStatus, 30000);
   </script>
 </body>
 </html>

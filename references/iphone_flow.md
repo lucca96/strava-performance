@@ -51,6 +51,8 @@ O comando `sync`:
 
 Nao commitar `.env` nem `data/cache/token.json`.
 
+Se o workflow falhar com `Application Status Inactive`, reativar o aplicativo em `Strava API Settings` usando a conta dona do app. Depois validar se o `STRAVA_REFRESH_TOKEN` ainda e valido; se houver nova autorizacao OAuth, atualizar o secret no GitHub.
+
 ## Workflow
 
 Arquivo:
@@ -133,6 +135,7 @@ Objetivo:
 - mostrar o status publico mais recente dos workflows `iPhone sync` e `iPhone weekly`.
 - copiar o AI-ready com um bloco inicial de contexto para a AI, incluindo status do GitHub Actions, ultimo treino e contexto preenchido no iPhone.
 - oferecer um botao `Atualizar app` para recarregar imediatamente status do GitHub Actions, historico, reports e AI-ready.
+- evitar polling automatico frequente contra a API publica do GitHub, para nao consumir limite publico e gerar erro no iPhone.
 - expor a identidade visual do launcher com icone proprio.
 - usar `apple-touch-icon` em PNG para evitar fallback do Safari/iPhone.
 - o launcher atualmente usa `icon-app.png` como favicon, logo do header e apple-touch-icon.
@@ -168,6 +171,7 @@ Motivo tecnico:
 - o historico persistente de atividades fica salvo em `data/performance_history.csv` e e commitado pelo workflow `iPhone sync`.
 - o contexto manual preenchido no app fica salvo somente no proprio iPhone via `localStorage`, separado por `activity_id`.
 - o launcher tambem consulta a API publica de GitHub Actions para exibir se os ultimos workflows terminaram com sucesso, falha ou ainda estao rodando.
+- o launcher deve consultar esses endpoints no carregamento inicial e quando o usuario toca em `Atualizar app`; nao usar polling curto continuo sem token.
 - o GitHub Pages publica site estatico publico; nao colocar segredos nele.
 
 Restricao importante:

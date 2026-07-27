@@ -57,3 +57,4 @@ Campos:
 - Para backfill normal: padrao 100.
 - Nunca remover cache para "forcar atualizacao" sem intencao explicita.
 - Nunca criar novo script que chame Strava fora do `StravaClient`.
+- Se a API responder `403` com `Application Status Inactive`, o problema e o status do aplicativo no Strava, nao o GitHub Actions. Reativar o app no painel de API do Strava e conferir assinatura/conta dona do app.
