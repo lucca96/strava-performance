@@ -7,7 +7,7 @@ load_dotenv()
 client_id = os.getenv("STRAVA_CLIENT_ID")
 client_secret = os.getenv("STRAVA_CLIENT_SECRET")
 
-code = "ec2dc1ac7e4ed2d018d5cd42a64599248574509a"
+code = os.getenv("STRAVA_AUTHORIZATION_CODE")
 
 url = "https://www.strava.com/oauth/token"
 

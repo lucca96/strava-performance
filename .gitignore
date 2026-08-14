@@ -6,3 +6,9 @@ desktop.ini
 data/cache/
 data/api_usage_log.csv
 data/test_tmp/
+
+# Personal Strava data
+data/*.csv
+data/ai_reports/
+data/reports/
+data/weekly_reports/
